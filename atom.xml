@@ -1,132 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
 
-<!DOCTYPE html>
-<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
-<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
-<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
-<head>
-  <meta charset="utf-8">
-  <title>My Little Garden of Code</title>
-  <meta name="author" content="Phil Tomson">
-
-  
-  <meta name="description" content="I finished up a 16-month LLVM contracting gig at the end of 2016. Got the flu a couple of weeks ago and have been pretty much out of commission until &hellip;">
-  
-
-  <!-- http://t.co/dKP3o1e -->
-  <meta name="HandheldFriendly" content="True">
-  <meta name="MobileOptimized" content="320">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  
-  <link rel="canonical" href="http://philtomson.github.io/">
-  <link href="/favicon.png" rel="icon">
-  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
-  <link href="/atom.xml" rel="alternate" title="My Little Garden of Code" type="application/atom+xml">
-  <script src="/javascripts/modernizr-2.0.js"></script>
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
-  <script src="/javascripts/octopress.js" type="text/javascript"></script>
-  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
-<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
-<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
-
-  
-
-</head>
-
-<body   >
-  <header role="banner"><hgroup>
-  <h1><a href="/">My Little Garden of Code</a></h1>
-  
-    <h2>bloggings about codings</h2>
-  
-</hgroup>
-
-</header>
-  <nav role="navigation"><ul class="subscription" data-subscription="rss">
-  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
-  
-</ul>
-  
-<form action="https://www.google.com/search" method="get">
-  <fieldset role="search">
-    <input type="hidden" name="sitesearch" value="philtomson.github.io">
-    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
-  </fieldset>
-</form>
-  
-<ul class="main-navigation">
-  <li><a href="/">Blog</a></li>
-  <li><a href="/blog/archives">Archives</a></li>
-</ul>
-
-</nav>
-  <div id="main">
-    <div id="content">
-      <div class="blog-index">
-  
-  
-  
-    <article>
-      
-  <header>
+  <title><![CDATA[My Little Garden of Code]]></title>
+  <link href="http://philtomson.github.io/atom.xml" rel="self"/>
+  <link href="http://philtomson.github.io/"/>
+  <updated>2017-02-02T17:21:37-08:00</updated>
+  <id>http://philtomson.github.io/</id>
+  <author>
+    <name><![CDATA[Phil Tomson]]></name>
     
-      <h1 class="entry-title"><a href="/blog/2017/02/02/funemployment/">FUNemployment</a></h1>
-    
-    
-      <p class="meta">
-        
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
 
-
-
-
-<time class='entry-date' datetime='2017-02-02T16:49:19-08:00'><span class='date'><span class='date-month'>Feb</span> <span class='date-day'>2</span><span class='date-suffix'>nd</span>, <span class='date-year'>2017</span></span> <span class='time'>4:49 pm</span></time>
-        
-           | <a href="/blog/2017/02/02/funemployment/#disqus_thread"
-             data-disqus-identifier="http://philtomson.github.io/blog/2017/02/02/funemployment/">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>I finished up a 16-month LLVM contracting gig at the end of 2016. Got the flu a couple of weeks ago and have been pretty much out of commission until today when I finally had enough mental clarity and energy to get this blog going again.</p>
+  
+  <entry>
+    <title type="html"><![CDATA[FUNemployment]]></title>
+    <link href="http://philtomson.github.io/blog/2017/02/02/funemployment/"/>
+    <updated>2017-02-02T16:49:19-08:00</updated>
+    <id>http://philtomson.github.io/blog/2017/02/02/funemployment</id>
+    <content type="html"><![CDATA[<p>I finished up a 16-month LLVM contracting gig at the end of 2016. Got the flu a couple of weeks ago and have been pretty much out of commission until today when I finally had enough mental clarity and energy to get this blog going again.</p>
 
 <p>Since I last posted in 2014 it seems that Octopress has been updated. I had to go back to my old desktop machine and find where all the blog-related files were and transfer them to my current desktop machine. Of course I tried looking at the Octopress documentation to figure out how it works since I&rsquo;d completely forgotten in the last ~2.5 years. And of course, the docs no longer cover the old version of Octopress. So I went with the newer version and tried moving things over. For the most part it works. The twitter button that used to be over there on the right doesn&rsquo;t seem to want to show up anymore and I have no idea why (it&rsquo;s right there in the _config.yml). And pygments now seems to want a space between the language name and the &lsquo;]&rsquo; - so whereas &lsquo;[lang:ocaml]&rsquo; used to work for the code highlighting incantation, now it seems to want &lsquo;[lang:ocaml ]&rsquo; &hellip; weird.</p>
 
 <p>So now that the blog <em>mostly</em> seems to be working again, I&rsquo;m going to be looking into BNNs <a href="https://arxiv.org/pdf/1602.02830v3.pdf.">(Binarized Neural Networks)</a>. Weights in BNNs are represented as binary values and instead of matrix multiplecations (as is common in regular neural nets) the main operation on binary weights is XNOR which is a lot faster and more amenable for implementation in hardware like FPGAs. But more on BNNs later, I hope to start blogging about my BNN investigations which is why I wanted to get the blog going again.</p>
-</div>
+]]></content>
+  </entry>
   
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/09/10/some-notes-on-building-and-running-mirage-unikernels-on-cubieboard2/">Some Notes on Building and Running Mirage Unikernels on Cubieboard2</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2014-09-10T15:37:00-07:00'><span class='date'><span class='date-month'>Sep</span> <span class='date-day'>10</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>3:37 pm</span></time>
-        
-           | <a href="/blog/2014/09/10/some-notes-on-building-and-running-mirage-unikernels-on-cubieboard2/#disqus_thread"
-             data-disqus-identifier="http://philtomson.github.io/blog/2014/09/10/some-notes-on-building-and-running-mirage-unikernels-on-cubieboard2/">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p><em>First a caveat: These notes reflect the state of Mirage as of the date of this post. Mirage is still in heavy development and the instructions here will change (hopefully become simpler) going forward.</em></p>
+  <entry>
+    <title type="html"><![CDATA[Some Notes on Building and Running Mirage Unikernels on Cubieboard2]]></title>
+    <link href="http://philtomson.github.io/blog/2014/09/10/some-notes-on-building-and-running-mirage-unikernels-on-cubieboard2/"/>
+    <updated>2014-09-10T15:37:00-07:00</updated>
+    <id>http://philtomson.github.io/blog/2014/09/10/some-notes-on-building-and-running-mirage-unikernels-on-cubieboard2</id>
+    <content type="html"><![CDATA[<p><em>First a caveat: These notes reflect the state of Mirage as of the date of this post. Mirage is still in heavy development and the instructions here will change (hopefully become simpler) going forward.</em></p>
 
 <p>These are some notes on what I had to do to get a <a href="http://mirageos.org/">Mirage</a> unikernel running under <a href="http://www.xenproject.org/">Xen</a> on a <a href="http://cubieboard.org/">cubieboard2</a>. The intent here is to document some of the gotchyas I ran into.</p>
 
@@ -293,38 +198,15 @@ stackv4                                     11   256     1     -b----       0.1
 
 <pre><code>$ sudo xl destroy stackv4
 </code></pre>
-</div>
+]]></content>
+  </entry>
   
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/07/09/core-dot-async-example/">Cooperative Concurrency in OCaml: A Core.Std.Async Example</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2014-07-09T13:39:00-07:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>9</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>1:39 pm</span></time>
-        
-           | <a href="/blog/2014/07/09/core-dot-async-example/#disqus_thread"
-             data-disqus-identifier="http://philtomson.github.io/blog/2014/07/09/core-dot-async-example/">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>I&rsquo;ve been working on an OCaml <a href="http://mqtt.org/">Mqtt</a> client for eventual use with <a href="http://mirageos.org/">MirageOS</a>. Mqtt is a lightweight publish/subscribe messaging transport protocol that&rsquo;s aimed at embedded systems and IoT applications. Without going into much detail about the protocol, implementing it requires some form of concurrency as there is a keep-alive ping that needs to be sent from the client to the broker at regular intervals to keep the connection alive. The client can also be receiving messages from the broker and needs to be able to queue up those messages for processing.</p>
+  <entry>
+    <title type="html"><![CDATA[Cooperative Concurrency in OCaml: A Core.Std.Async Example]]></title>
+    <link href="http://philtomson.github.io/blog/2014/07/09/core-dot-async-example/"/>
+    <updated>2014-07-09T13:39:00-07:00</updated>
+    <id>http://philtomson.github.io/blog/2014/07/09/core-dot-async-example</id>
+    <content type="html"><![CDATA[<p>I&rsquo;ve been working on an OCaml <a href="http://mqtt.org/">Mqtt</a> client for eventual use with <a href="http://mirageos.org/">MirageOS</a>. Mqtt is a lightweight publish/subscribe messaging transport protocol that&rsquo;s aimed at embedded systems and IoT applications. Without going into much detail about the protocol, implementing it requires some form of concurrency as there is a keep-alive ping that needs to be sent from the client to the broker at regular intervals to keep the connection alive. The client can also be receiving messages from the broker and needs to be able to queue up those messages for processing.</p>
 
 <p>When considering concurrency options for OCaml, I thought I&rsquo;d give Core.Std.Async (from here on, I&rsquo;ll just refer to it as Async) a try as it&rsquo;s covered in pretty good detail in <a href="https://realworldocaml.org/v1/en/html/concurrent-programming-with-async.html">chapter 18 of Real World OCaml</a>. Of course, I didn&rsquo;t see exactly what I needed in the examples there, so I had to play with a toy producer/consumer example for a bit. The code appears below, hopefully you&rsquo;ll find it useful if you want to try out Async:</p>
 
@@ -475,38 +357,15 @@ Got 9
 <p>While in essense we&rsquo;re still using callbacks in our event loop (very Javascript/Node.js-ish), the monadic sequencing operators >>=, >>| and >>> do seem to make the code easier to read and reason about. Add in the handy <em>Pipe</em>s and it&rsquo;s not a bad way to do concurrency, really, once you get the hang of dealing with the monads. It should be noted, however, that as in most cooperative concurrency schemes, you&rsquo;re only going to be using one core of your processor.</p>
 
 <p>Finally&hellip; I&rsquo;m pretty new to Core and Async so if I&rsquo;ve made some mistakes here in the explanation or if the code could be more elegant please don&rsquo;t hesitate to let me know in the comments.</p>
-</div>
+]]></content>
+  </entry>
   
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/05/30/stop-the-presses-ocaml-wins/">Stop the Presses: OCaml Wins in Terms of Speed</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2014-05-30T06:43:00-07:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>30</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>6:43 am</span></time>
-        
-           | <a href="/blog/2014/05/30/stop-the-presses-ocaml-wins/#disqus_thread"
-             data-disqus-identifier="http://philtomson.github.io/blog/2014/05/30/stop-the-presses-ocaml-wins/">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h3>Benchmarking is a tricky thing.</h3>
+  <entry>
+    <title type="html"><![CDATA[Stop the Presses: OCaml Wins in Terms of Speed]]></title>
+    <link href="http://philtomson.github.io/blog/2014/05/30/stop-the-presses-ocaml-wins/"/>
+    <updated>2014-05-30T06:43:00-07:00</updated>
+    <id>http://philtomson.github.io/blog/2014/05/30/stop-the-presses-ocaml-wins</id>
+    <content type="html"><![CDATA[<h3>Benchmarking is a tricky thing.</h3>
 
 <p>Several sharp eyes noticed some flaws in the OCaml code in my <a href="http://philtomson.github.io/blog/2014/05/29/comparing-a-machine-learning-algorithm-implemented-in-f-number-and-ocaml/">last post</a>.</p>
 
@@ -816,38 +675,15 @@ sys     0m0.092s
 <li>The parallelization point remains: It&rsquo;s much easier in F#. How fast would this be if OCaml&rsquo;s Parmap used some kind of shared-memory implementation? The F# example was about 1.4X faster with <em>Parallel</em> so that would get the OCaml version down to ~8.5 seconds if a similar mechanism existed.</li>
 </ol>
 
-</div>
+]]></content>
+  </entry>
   
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/05/29/comparing-a-machine-learning-algorithm-implemented-in-f-number-and-ocaml/">Comparing a Machine Learning Algorithm Implemented in F# and OCaml</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2014-05-29T18:30:00-07:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>29</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>6:30 pm</span></time>
-        
-           | <a href="/blog/2014/05/29/comparing-a-machine-learning-algorithm-implemented-in-f-number-and-ocaml/#disqus_thread"
-             data-disqus-identifier="http://philtomson.github.io/blog/2014/05/29/comparing-a-machine-learning-algorithm-implemented-in-f-number-and-ocaml/">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>(UPDATE: please see the <a href="http://philtomson.github.io/blog/2014/05/30/stop-the-presses-ocaml-wins/">next post: Stop the Presses: OCaml wins in terms of speed</a> in which it is shown that there were some serious flaws in my OCaml implementation below. I&rsquo;ll keep this post around for reference.)</p>
+  <entry>
+    <title type="html"><![CDATA[Comparing a Machine Learning Algorithm Implemented in F# and OCaml]]></title>
+    <link href="http://philtomson.github.io/blog/2014/05/29/comparing-a-machine-learning-algorithm-implemented-in-f-number-and-ocaml/"/>
+    <updated>2014-05-29T18:30:00-07:00</updated>
+    <id>http://philtomson.github.io/blog/2014/05/29/comparing-a-machine-learning-algorithm-implemented-in-f-number-and-ocaml</id>
+    <content type="html"><![CDATA[<p>(UPDATE: please see the <a href="http://philtomson.github.io/blog/2014/05/30/stop-the-presses-ocaml-wins/">next post: Stop the Presses: OCaml wins in terms of speed</a> in which it is shown that there were some serious flaws in my OCaml implementation below. I&rsquo;ll keep this post around for reference.)</p>
 
 <p>I&rsquo;ve been dabbling with OCaml for the last several years and so when I saw a recent Meetup notice about an F# machine learning code dojo being led by <a href="https://github.com/mathias-brandewinder">Mathias Brandewinder</a> within walking distance of my house I thought I&rsquo;d check it out. I&rsquo;m one of those Linux guys who tends to eschew IDEs, prefers to use vim, and considers .NET to be some very foreign territory. F# is based on OCaml, so I figured I&rsquo;d have a bit of a headstart in the language area even if I haven&rsquo;t done any .NET development.</p>
 
@@ -1221,38 +1057,15 @@ I noticed in <em>top</em> that this version launched 4 different <em>classifyDig
 <h3>Next Time</h3>
 
 <p>I want to implement the algorithm in <a href="http://julialang.org/">Julia</a>. I&rsquo;m going to guess that Julia&rsquo;s vectorization support means that it will beat both OCaml and F#.</p>
-</div>
+]]></content>
+  </entry>
   
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/05/14/drawing-happy-little-trees-tree-meditation-number-2/">Drawing Happy Little Trees: Tree Meditation #2</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2014-05-14T11:55:00-07:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>14</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>11:55 am</span></time>
-        
-           | <a href="/blog/2014/05/14/drawing-happy-little-trees-tree-meditation-number-2/#disqus_thread"
-             data-disqus-identifier="http://philtomson.github.io/blog/2014/05/14/drawing-happy-little-trees-tree-meditation-number-2/">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p><img src="http://upload.wikimedia.org/wikipedia/commons/e/eb/Ash_Tree_-_geograph.org.uk_-_590710.jpg" alt="Alt Ash Tree" /></p>
+  <entry>
+    <title type="html"><![CDATA[Drawing Happy Little Trees: Tree Meditation #2]]></title>
+    <link href="http://philtomson.github.io/blog/2014/05/14/drawing-happy-little-trees-tree-meditation-number-2/"/>
+    <updated>2014-05-14T11:55:00-07:00</updated>
+    <id>http://philtomson.github.io/blog/2014/05/14/drawing-happy-little-trees-tree-meditation-number-2</id>
+    <content type="html"><![CDATA[<p><img src="http://upload.wikimedia.org/wikipedia/commons/e/eb/Ash_Tree_-_geograph.org.uk_-_590710.jpg" alt="Alt Ash Tree" /></p>
 
 <p><em>In the <a href="http://philtomson.github.io/blog/2014/04/29/coding-pretty-little-trees-tree-meditation-number-1/">previous Tree Meditation</a> we pondered some preliminary ideas about treeness. Now let&rsquo;s think about how to draw our trees. Before we start, make sure you paste this tree type code from the last installment into the <a href="http://try.ocamlpro.com/">Try OCaml REPL</a>:</em></p>
 
@@ -1304,7 +1117,7 @@ in the graphical output of the tree. That&rsquo;s the <em>[label=&ldquo;some lab
 
 <p>This will generate the file happy_tree.svg which we see here:</p>
 
-<p><img src="/images/happy_tree.svg" alt="Alt Our Happy Tree" /></p>
+<p><img src="http://philtomson.github.io/images/happy_tree.svg" alt="Alt Our Happy Tree" /></p>
 
 <p>That&rsquo;s nice and all, but what if our tree is much larger than this one and has many nodes and leaves? We&rsquo;d like to be able to generate the <em>tree.dot</em> file automatically from our coded representation of our tree. To do that we need to talk a bit about tree <em>traversal</em> (visiting each node or leaf of our tree structure).</p>
 
@@ -1340,7 +1153,7 @@ in the graphical output of the tree. That&rsquo;s the <em>[label=&ldquo;some lab
 
 <p>Which looks like:</p>
 
-<p><img src="/images/bigger_tree.svg" alt="Alt Our Happy Tree" /></p>
+<p><img src="http://philtomson.github.io/images/bigger_tree.svg" alt="Alt Our Happy Tree" /></p>
 
 <p>So why the odd order of the numbers in the tree above? One thing that&rsquo;s not clear in our type definition from the previous article is that, by convention, an important property of binary trees is that child trees to the left of the current node should contain values that are less than the value held in the current node and child trees to the right of the current node should contain values that are greater than the value of the current node.</p>
 
@@ -1753,38 +1566,15 @@ in the graphical output of the tree. That&rsquo;s the <em>[label=&ldquo;some lab
 </code></pre>
 
 <h3>That&rsquo;s all there is to it</h3>
-</div>
+]]></content>
+  </entry>
   
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/04/29/coding-pretty-little-trees-tree-meditation-number-1/">Coding Happy Little Trees: Tree Meditation #1</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2014-04-29T12:33:00-07:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>29</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>12:33 pm</span></time>
-        
-           | <a href="/blog/2014/04/29/coding-pretty-little-trees-tree-meditation-number-1/#disqus_thread"
-             data-disqus-identifier="http://philtomson.github.io/blog/2014/04/29/coding-pretty-little-trees-tree-meditation-number-1/">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p><img src="http://t3.gstatic.com/images?q=tbn:ANd9GcSIjEBactvxvvUkh6DVgHT2Dan9e57x3nbGbq5RdzjwXkcV4V1r" title="Bob Ross, master of happy trees" alt="Alt Bob Ross" /></p>
+  <entry>
+    <title type="html"><![CDATA[Coding Happy Little Trees: Tree Meditation #1]]></title>
+    <link href="http://philtomson.github.io/blog/2014/04/29/coding-pretty-little-trees-tree-meditation-number-1/"/>
+    <updated>2014-04-29T12:33:00-07:00</updated>
+    <id>http://philtomson.github.io/blog/2014/04/29/coding-pretty-little-trees-tree-meditation-number-1</id>
+    <content type="html"><![CDATA[<p><img src="http://t3.gstatic.com/images?q=tbn:ANd9GcSIjEBactvxvvUkh6DVgHT2Dan9e57x3nbGbq5RdzjwXkcV4V1r" title="Bob Ross, master of happy trees" alt="Alt Bob Ross" /></p>
 
 <p><em>It all started a few months ago when I created a quad-tree structure and
 then wanted to be able to visualize those trees with GraphViz. Thus
@@ -1834,7 +1624,7 @@ then wanted to be able to visualize those trees with GraphViz. Thus
 
 <p>And what does it look like?</p>
 
-<p><img src="/images/happy_tree.png" alt="Alt Our Happy Tree" /></p>
+<p><img src="http://philtomson.github.io/images/happy_tree.png" alt="Alt Our Happy Tree" /></p>
 
 <p>Notice in this case that we&rsquo;ve got a complete tree; we did not use the <em>Empty</em> constructor. What if we had?</p>
 
@@ -1863,38 +1653,15 @@ then wanted to be able to visualize those trees with GraphViz. Thus
 <p>Because the <em>Node</em> constructor expects to have three components. So <em>Empty</em> is used to designate the absense of a <em>Node</em> or <em>Leaf</em>.</p>
 
 <p>How did I draw that tree above? That&rsquo;ll have to wait for the next Tree Medititation installment when we&rsquo;ll discuss things like <em>tree traversal</em> and generating <em>dot files</em> used by <a href="http://www.graphviz.org/">Graphviz</a> to create images.</p>
-</div>
+]]></content>
+  </entry>
   
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/03/07/c-plus-plus-dusty-corner-number-537-0-is-sometimes-a-special/">C++ Dusty Corner #5379: 0 Is Sometimes a Special Number</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2014-03-07T08:57:00-08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>7</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>8:57 am</span></time>
-        
-           | <a href="/blog/2014/03/07/c-plus-plus-dusty-corner-number-537-0-is-sometimes-a-special/#disqus_thread"
-             data-disqus-identifier="http://philtomson.github.io/blog/2014/03/07/c-plus-plus-dusty-corner-number-537-0-is-sometimes-a-special/">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>I recently discovered the <a href="http://cppquiz.org/">C++ Quiz site</a> and
+  <entry>
+    <title type="html"><![CDATA[C++ Dusty Corner #5379: 0 Is Sometimes a Special Number]]></title>
+    <link href="http://philtomson.github.io/blog/2014/03/07/c-plus-plus-dusty-corner-number-537-0-is-sometimes-a-special/"/>
+    <updated>2014-03-07T08:57:00-08:00</updated>
+    <id>http://philtomson.github.io/blog/2014/03/07/c-plus-plus-dusty-corner-number-537-0-is-sometimes-a-special</id>
+    <content type="html"><![CDATA[<p>I recently discovered the <a href="http://cppquiz.org/">C++ Quiz site</a> and
 figuring that it&rsquo;s always good to practice C++ skills I started going
 through the questions. The third question I
 encountered gave me some pause&hellip;  The question was:</p>
@@ -2012,74 +1779,28 @@ situation in C++? I&rsquo;d guess it would be very rare. In most cases you
 wouldn&rsquo;t be passing a &lsquo;0&rsquo; literal to a function like that - you&rsquo;d instead
 be passing in a variable and even if that variable contains &lsquo;0&rsquo;, that&rsquo;s
 just fine.</p>
-</div>
+]]></content>
+  </entry>
   
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/04/28/is-growth-really-an-end-in-itself/">Is Growth Really an End in Itself?</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2013-04-28T12:04:00-07:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>28</span><span class='date-suffix'>th</span>, <span class='date-year'>2013</span></span> <span class='time'>12:04 pm</span></time>
-        
-           | <a href="/blog/2013/04/28/is-growth-really-an-end-in-itself/#disqus_thread"
-             data-disqus-identifier="http://philtomson.github.io/blog/2013/04/28/is-growth-really-an-end-in-itself/">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>I had an interview at a startup downtown this last week. This company has revenue and is selling stuff.  At one point I asked the Director of Engineering: &ldquo;So, is the company profitable?&rdquo;.  Apparently this wasn&rsquo;t the right question to ask.  His response was they weren&rsquo;t trying to be profitable, they were trying to grow.  As I was pondering this later it seemed odd to want growth over profitability.  But apparently in the topsy-turvy world of venture capital funded startups this makes some kind of sense.</p>
+  <entry>
+    <title type="html"><![CDATA[Is Growth Really an End in Itself?]]></title>
+    <link href="http://philtomson.github.io/blog/2013/04/28/is-growth-really-an-end-in-itself/"/>
+    <updated>2013-04-28T12:04:00-07:00</updated>
+    <id>http://philtomson.github.io/blog/2013/04/28/is-growth-really-an-end-in-itself</id>
+    <content type="html"><![CDATA[<p>I had an interview at a startup downtown this last week. This company has revenue and is selling stuff.  At one point I asked the Director of Engineering: &ldquo;So, is the company profitable?&rdquo;.  Apparently this wasn&rsquo;t the right question to ask.  His response was they weren&rsquo;t trying to be profitable, they were trying to grow.  As I was pondering this later it seemed odd to want growth over profitability.  But apparently in the topsy-turvy world of venture capital funded startups this makes some kind of sense.</p>
 
 <p>But still, I kind of wonder about  this idea of  growth for growth&rsquo;s sake.  Isn&rsquo;t that kind of how cancer works?  Or maybe kind of like the growth caused by high fructose corn syrup?</p>
 
 <p>The thing is, these VC funded startups seem to be getting all the press, whereas companies that aren&rsquo;t obsessed with growth tend to fly completely under the radar.  My wife worked for a small software company for most of the 90&rsquo;s that made scientific visualization software for the Mac.  They primarily sell into Universities &amp; Government research facilities.  It&rsquo;s a small niche, but for the last 20 years or so they&rsquo;ve employed between 5 and 8 software engineers.  They still employ about that many people and probably will for another 10 years or so.  They&rsquo;re not worried about growth, they want sustainability.  And they always seemed to be having a good time.  Most of the people working there have been there for close to 20 years now.  It&rsquo;s interesting, steady work that seems to pay well.   Sure, they could have gone out and tried to get VC to “expand into new markets”&hellip; but it&rsquo;s probable that if they had done that, they wouldn&rsquo;t exist now.  They may have been bought and rolled into a larger company and most of the people working there would have left soon after that or rapid growth could have caused it to crash and burn.  No, instead they&rsquo;ve chosen the sustainable path.  Good on them.</p>
-</div>
+]]></content>
+  </entry>
   
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/01/01/using-the-graphics-module-in-ocaml/">Using the Graphics Module in the OCaml Toplevel</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2013-01-01T12:33:00-08:00'><span class='date'><span class='date-month'>Jan</span> <span class='date-day'>1</span><span class='date-suffix'>st</span>, <span class='date-year'>2013</span></span> <span class='time'>12:33 pm</span></time>
-        
-           | <a href="/blog/2013/01/01/using-the-graphics-module-in-ocaml/#disqus_thread"
-             data-disqus-identifier="http://philtomson.github.io/blog/2013/01/01/using-the-graphics-module-in-ocaml/">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><div><script src='https://gist.github.com/3940124.js'></script>
+  <entry>
+    <title type="html"><![CDATA[Using the Graphics Module in the OCaml Toplevel]]></title>
+    <link href="http://philtomson.github.io/blog/2013/01/01/using-the-graphics-module-in-ocaml/"/>
+    <updated>2013-01-01T12:33:00-08:00</updated>
+    <id>http://philtomson.github.io/blog/2013/01/01/using-the-graphics-module-in-ocaml</id>
+    <content type="html"><![CDATA[<div><script src='https://gist.github.com/3940124.js'></script>
 <noscript><pre><code>(* SEE: http://mirror.ocamlcore.org/wiki.cocan.org/tips_for_using_the_ocaml_toplevel.html *)
 
 $ ocaml
@@ -2104,118 +1825,146 @@ Findlib has been successfully loaded. Additional directives:
 
 
 
-</div>
+]]></content>
+  </entry>
   
-  
+  <entry>
+    <title type="html"><![CDATA[First Post]]></title>
+    <link href="http://philtomson.github.io/blog/2013/01/01/first-post/"/>
+    <updated>2013-01-01T12:04:00-08:00</updated>
+    <id>http://philtomson.github.io/blog/2013/01/01/first-post</id>
+    <content type="html"><![CDATA[<p>This is my GitHub blog.</p>
+
+<p>Here&rsquo;s a test code snippet:</p>
+
+<figure class='code'><figcaption><span>Discover if a number is prime </span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Fixnum</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">prime?</span>
+</span><span class='line'>    <span class="p">(</span><span class="s1">&#39;1&#39;</span> <span class="o">*</span> <span class="nb">self</span><span class="p">)</span> <span class="o">!~</span> <span class="sr">/^1?$|^(11+?)\1+$/</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
-    </article>
-  
-  <div class="pagination">
-    
-      <a class="prev" href="/posts/2">&larr; Older</a>
-    
-    <a href="/blog/archives">Blog Archives</a>
-    
-  </div>
-</div>
-<aside class="sidebar">
-  
-    <section>
-  <h1>Recent Posts</h1>
-  <ul id="recent_posts">
-    
-      <li class="post">
-        <a href="/blog/2017/02/02/funemployment/">FUNemployment</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/09/10/some-notes-on-building-and-running-mirage-unikernels-on-cubieboard2/">Some Notes on Building and Running Mirage Unikernels on Cubieboard2</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/07/09/core-dot-async-example/">Cooperative Concurrency in OCaml: A Core.Std.Async Example</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/05/30/stop-the-presses-ocaml-wins/">Stop the Presses: OCaml Wins in Terms of Speed</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/05/29/comparing-a-machine-learning-algorithm-implemented-in-f-number-and-ocaml/">Comparing a Machine Learning Algorithm Implemented in F# and OCaml</a>
-      </li>
-    
-  </ul>
-</section>
+<p>Test Gist embedding:</p>
 
-<section>
-  <h1>GitHub Repos</h1>
-  <ul id="gh_repos">
-    <li class="loading">Status updating...</li>
-  </ul>
-  
-  <a href="https://github.com/philtomson">@philtomson</a> on GitHub
-  
-  <script type="text/javascript">
-    $(document).ready(function(){
-        if (!window.jXHR){
-            var jxhr = document.createElement('script');
-            jxhr.type = 'text/javascript';
-            jxhr.src = '/javascripts/libs/jXHR.js';
-            var s = document.getElementsByTagName('script')[0];
-            s.parentNode.insertBefore(jxhr, s);
-        }
+<div><script src='https://gist.github.com/2629106.js'></script>
+<noscript><pre><code>(* POSET probably works better than RING here  *)
+module type RING = 
+  sig
+    type t
+    val max : t
+    val min : t
+    val succ : t -&gt; t
+    val val_to_s : t -&gt; string
+  end
 
-        github.showRepos({
-            user: 'philtomson',
-            count: 0,
-            skip_forks: true,
-            target: '#gh_repos'
-        });
-    });
-  </script>
-  <script src="/javascripts/github.js" type="text/javascript"> </script>
-</section>
+
+(* Create a &quot;counter&quot; which is a list of values of type RING *)
+module Counter (V_type : RING) = 
+  struct 
+  include V_type
+  let rec next ops = match ops with
+      [] -&gt; []
+    | o::os -&gt; if o = max then
+                 (succ o)::(next os)
+               else
+                 (succ o)::os 
+
+  let rec max_val vs = List.for_all (fun x -&gt; (x = max)) vs
 
 
 
+ let to_s_lst opslst = 
+    List.rev (List.map (fun x -&gt; val_to_s x) opslst) 
 
+  let to_s opslst = 
+    let los = to_s_lst opslst in
+    String.concat &quot;,&quot; los
 
-  
-</aside>
-
-    </div>
-  </div>
-  <footer role="contentinfo"><p>
-  Copyright &copy; 2017 - Phil Tomson -
-  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
-</p>
-
-</footer>
-  
-
-<script type="text/javascript">
-      var disqus_shortname = 'mylittlegardenofcode';
+  let count_full vs = 
+    let count = ref vs in
+    while ( not (max_val !count )) do
+      Printf.printf &quot;%s\n&quot; (to_s !count);
+      count := next !count
+    done ;
+    (* one last time *)
+    Printf.printf &quot;%s\n&quot; (to_s !count);
       
-        
-        var disqus_script = 'count.js';
-      
-    (function () {
-      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-      dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
-      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-    }());
-</script>
+  end
+
+module Ops = 
+  struct
+    type t = C | P | M | T | D 
+
+    let max = D
+
+    let min = C
+
+    let val_to_s o = match o with
+        C -&gt; &quot;C&quot;
+      | P -&gt; &quot;+&quot;
+      | M -&gt; &quot;-&quot;
+      | T -&gt; &quot;*&quot;
+      | D -&gt; &quot;/&quot; 
+
+    let succ o = match o with
+      | C -&gt; P
+      | P -&gt; M
+      | M -&gt; T
+      | T -&gt; D  
+      | D -&gt; C 
+
+  end
+
+module Binary = 
+  struct
+    type t = F | T 
+    let max = T
+    let min = F
+
+    let val_to_s b = match b with 
+      F -&gt; &quot;F&quot;
+    | T -&gt; &quot;T&quot; 
+
+    let succ b = match b with
+      F -&gt; T
+    | T -&gt; F
+
+  end
+
+
+  module OpCounter = Counter(Ops)
+
+  module BinCounter = Counter(Binary)
 
 
 
+  open OpCounter
+  open Ops
+
+let test = next (next (next (next (next (next (next (next (next (next
+[C;C;C]))))))))) ;;
+let test_str = to_s test;;
+Printf.printf &quot;[%s]\n&quot; (test_str) ;;
+count_full [C;C;C] ;;
+
+  open BinCounter
+  open Binary
+let test = next (next (next (next (next (next (next (next (next (next
+[F;F;F;F]))))))))) ;;
+let test_str = to_s test;;
+Printf.printf &quot;[%s]\n&quot; (test_str) ;;
+count_full [F;F;F] ;;
+</code></pre></noscript></div>
 
 
 
-
-
-
-
-
-</body>
-</html>
+]]></content>
+  </entry>
+  
+</feed>

@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Bobross | My Little Garden of Code]]></title>
+  <link href="http://philtomson.github.io/blog/categories/bobross/atom.xml" rel="self"/>
+  <link href="http://philtomson.github.io/"/>
+  <updated>2017-02-02T17:21:37-08:00</updated>
+  <id>http://philtomson.github.io/</id>
+  <author>
+    <name><![CDATA[Phil Tomson]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Coding Happy Little Trees: Tree Meditation #1]]></title>
+    <link href="http://philtomson.github.io/blog/2014/04/29/coding-pretty-little-trees-tree-meditation-number-1/"/>
+    <updated>2014-04-29T12:33:00-07:00</updated>
+    <id>http://philtomson.github.io/blog/2014/04/29/coding-pretty-little-trees-tree-meditation-number-1</id>
+    <content type="html"><![CDATA[<p><img src="http://t3.gstatic.com/images?q=tbn:ANd9GcSIjEBactvxvvUkh6DVgHT2Dan9e57x3nbGbq5RdzjwXkcV4V1r" title="Bob Ross, master of happy trees" alt="Alt Bob Ross" /></p>
+
+<p><em>It all started a few months ago when I created a quad-tree structure and
+then wanted to be able to visualize those trees with GraphViz. Thus
+  this tree meditation was born. And who was the master of happy little trees? <a href="http://en.wikipedia.org/wiki/Bob_Ross">Bob Ross</a> of course. So if you like, read the following in Bob&rsquo;s very relaxing voice&hellip;. try not to go to sleep.</em></p>
+
+<p>Before we can code our happy little trees we need to define what a tree is:</p>
+
+<p><figure class='code'><figcaption><span>[ ] [title: binary tree type in OCaml] </span></figcaption>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ocaml'><span class='line'><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="k">type</span> <span class="o">&amp;</span><span class="n">lsquo</span><span class="o">;</span><span class="n">a</span> <span class="n">tree</span> <span class="o">=</span> <span class="nc">Empty</span> <span class="o">|</span> <span class="nc">Leaf</span> <span class="k">of</span> <span class="k">&#39;</span><span class="n">a</span> <span class="o">|</span> <span class="nc">Node</span> <span class="k">of</span> <span class="k">&#39;</span><span class="n">a</span> <span class="n">tree</span> <span class="o">*</span> <span class="k">&#39;</span><span class="n">a</span> <span class="o">*</span> <span class="k">&#39;</span><span class="n">a</span> <span class="n">tree</span> <span class="o">;;&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p>You can go ahead and type that yourself into the <a href="http://try.ocamlpro.com/">online OCaml REPL (Read Evaluate Print Loop)</a>. Go ahead, give it a try.</p>
+
+<p>The type definition here is in <a href="http://ocaml.org/">OCaml</a>. The ML family of languages (SML, OCaml and Haskell, for example) excel at creating pretty trees because they have <a href="http://en.wikipedia.org/wiki/Algebraic_data_type">algebraic data types</a>. What&rsquo;s the <em>&lsquo;a tree</em> mean? The <em>'a</em> is a type variable and means that we&rsquo;re creating trees which contain data of type <em>'a</em>. Since <em>'a</em> isn&rsquo;t specified it means that any type of data could live in the tree; our tree is <em>polymorphic</em>.</p>
+
+<p>Since this is a SUM type (also called an OR type, notice the &lsquo;|&rsquo;s in the definition above) we can surmise that a tree can either be <em>Empty</em> or have a <em>Leaf</em> or a <em>Node</em>. <em>Empty</em>, <em>Leaf</em> and <em>Node</em> are used to build our tree, they are our tree <em>constructors</em>.</p>
+
+<p><em>Empty</em>, what&rsquo;s that mean? Think of it as the tree of nothingness. Very Zen. Hopefully it will make more sense when we start creating and traversing trees.</p>
+
+<p><em>Leaf of &lsquo;a</em> means that a leaf can contain data of type <em>'a</em> and as was explained above, that means that the leaf can contain data of any type. How do we create a <em>Leaf of 'a</em> in our code?</p>
+
+<p><figure class='code'><figcaption><span>[ ] [title: How to make a leaf] </span></figcaption>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='ocaml'><span class='line'><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="nc">Leaf</span> <span class="o">&amp;</span><span class="n">ldquo</span><span class="o">;</span><span class="nc">I</span><span class="o">&amp;</span><span class="n">rsquo</span><span class="o">;</span><span class="n">m</span> <span class="n">a</span> <span class="nc">Leaf</span><span class="o">&amp;</span><span class="n">rdquo</span><span class="o">;</span> <span class="o">;;&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">ul</span><span class="o">&gt;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="n">li</span><span class="o">&gt;:</span> <span class="kt">string</span> <span class="n">tree</span> <span class="o">=</span> <span class="nc">Leaf</span> <span class="o">&amp;</span><span class="n">ldquo</span><span class="o">;</span><span class="nc">I</span><span class="o">&amp;</span><span class="n">rsquo</span><span class="o">;</span><span class="n">m</span> <span class="n">a</span> <span class="nc">Leaf</span><span class="o">&amp;</span><span class="n">rdquo</span><span class="o">;</span>
+</span></code></pre></td></tr></table></div></figure></li>
+</ul>
+
+
+<p>The above was typed into the OCaml REPL. The <em>#</em> is the REPL prompt, we only typed in the actual <em>Leaf &ldquo;I&rsquo;m a Leaf&rdquo;</em> part. The second line shows the result. Notce that the type is <em>string tree</em> because we passed a string to the <em>Leaf</em> constructor. So our leaf is itself a tree. Ok, maybe that seems a little stange, but hold up a leaf by the stem and it can certainly look like a little tree on it&rsquo;s own, don&rsquo;t you think? Fractals, think fractals.</p>
+
+<p>Now we&rsquo;re left with that <em>Node of &lsquo;a tree * 'a * 'a tree</em> part of the tree type definition. Here we&rsquo;ve reached the essence of <em>treeness</em>. A <em>Node</em> of a tree has three parts: A <em>'a tree</em> on the left, the actual <em>'a</em> data contained by this <em>Node</em> and another <em>'a tree</em> on the right. This part of the definition of <em>tree</em> is recursive because a <em>Node</em> is the piece of a tree which can contain other trees - in our case we have defined a <em>binary</em> tree type since each node has only two branches: a left tree and a right tree. What&rsquo;s with the asterisks? Technically they indicate that this part of the type is a <em>Cartesian product</em> (algebraic datatypes remember). We can think of this particular one as a <em>triple</em> - a collection of 3 things.</p>
+
+<p>So without further ado, let&rsquo;s code a happy little tree:</p>
+
+<p><figure class='code'><figcaption><span>[ ] [title: Our first happy little tree ] </span></figcaption>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='ocaml'><span class='line'><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="nc">Node</span><span class="o">(</span><span class="nc">Leaf</span> <span class="mi">2</span><span class="o">,</span> <span class="mi">1</span><span class="o">,</span> <span class="nc">Leaf</span> <span class="mi">3</span><span class="o">)</span> <span class="o">;;&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">ul</span><span class="o">&gt;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="n">li</span><span class="o">&gt;:</span> <span class="kt">int</span> <span class="n">tree</span> <span class="o">=</span> <span class="nc">Node</span> <span class="o">(</span><span class="nc">Leaf</span> <span class="mi">2</span><span class="o">,</span> <span class="mi">1</span><span class="o">,</span> <span class="nc">Leaf</span> <span class="mi">3</span><span class="o">)</span>
+</span></code></pre></td></tr></table></div></figure></li>
+</ul>
+
+
+<p>The REPL tells us this is an <em>int tree</em>, a tree which contains integers at it&rsquo;s nodes and leaves.</p>
+
+<p>And what does it look like?</p>
+
+<p><img src="%20/images/happy_tree.png" alt="Alt Our Happy Tree" /></p>
+
+<p>Notice in this case that we&rsquo;ve got a complete tree; we did not use the <em>Empty</em> constructor. What if we had?</p>
+
+<p><figure class='code'><figcaption><span>[ ] [title: a perhaps less happy little tree ] </span></figcaption>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='ocaml'><span class='line'><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="nc">Node</span><span class="o">(</span><span class="nc">Leaf</span> <span class="mi">2</span><span class="o">,</span> <span class="mi">1</span><span class="o">,</span> <span class="nc">Empty</span><span class="o">)</span> <span class="o">;;&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">ul</span><span class="o">&gt;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="n">li</span><span class="o">&gt;:</span> <span class="kt">int</span> <span class="n">tree</span> <span class="o">=</span> <span class="nc">Node</span> <span class="o">(</span><span class="nc">Leaf</span> <span class="mi">2</span><span class="o">,</span> <span class="mi">1</span><span class="o">,</span> <span class="nc">Empty</span><span class="o">)</span>
+</span></code></pre></td></tr></table></div></figure></li>
+</ul>
+
+
+<p>Now we have what is perhaps a less happy little tree. The right branch of our little tree is <em>empty</em>. The <em>Leaf 3</em> has fallen. Now perhaps you can see why we need <em>Empty</em>. <em>Node</em> must have two sub-trees. We can&rsquo;t just do something like:</p>
+
+<p><figure class='code'><figcaption><span>[ ] [title: an erroneous tree ] </span></figcaption>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='ocaml'><span class='line'><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="nc">Node</span><span class="o">(</span><span class="nc">Leaf</span> <span class="mi">2</span><span class="o">,</span> <span class="mi">1</span><span class="o">)</span> <span class="o">;;&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="nc">File</span> <span class="o">&amp;</span><span class="n">ldquo</span><span class="o">;&amp;</span><span class="n">rdquo</span><span class="o">;,</span> <span class="n">line</span> <span class="mi">1</span><span class="o">,</span> <span class="n">characters</span> <span class="mi">1</span><span class="o">-</span><span class="mi">16</span><span class="o">:</span>
+</span><span class='line'><span class="nc">Error</span><span class="o">:</span> <span class="nc">The</span> <span class="n">constructor</span> <span class="nc">Node</span> <span class="n">expects</span> <span class="mi">3</span> <span class="n">argument</span><span class="o">(</span><span class="n">s</span><span class="o">),</span>
+</span><span class='line'>       <span class="n">but</span> <span class="n">is</span> <span class="n">applied</span> <span class="n">here</span> <span class="k">to</span> <span class="mi">2</span> <span class="n">argument</span><span class="o">(</span><span class="n">s</span><span class="o">)</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p>Because the <em>Node</em> constructor expects to have three components. So <em>Empty</em> is used to designate the absense of a <em>Node</em> or <em>Leaf</em>.</p>
+
+<p>How did I draw that tree above? That&rsquo;ll have to wait for the next Tree Medititation installment when we&rsquo;ll discuss things like <em>tree traversal</em> and generating <em>dot files</em> used by <a href="http://www.graphviz.org/">Graphviz</a> to create images.</p>
+]]></content>
+  </entry>
+  
+</feed>

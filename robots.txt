@@ -1,0 +1,4 @@
+User-agent: *
+Disallow: 
+
+Sitemap: http://philtomson.github.io/sitemap.xml 

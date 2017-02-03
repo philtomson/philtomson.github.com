@@ -1,0 +1,391 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Cooperative Concurrency in OCaml: A Core.Std.Async Example - My Little Garden of Code</title>
+  <meta name="author" content="Phil Tomson">
+
+  
+  <meta name="description" content="I&rsquo;ve been working on an OCaml Mqtt client for eventual use with MirageOS. Mqtt is a lightweight publish/subscribe messaging transport protocol &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://philtomson.github.io/blog/2014/07/09/core-dot-async-example/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="My Little Garden of Code" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">My Little Garden of Code</a></h1>
+  
+    <h2>bloggings about codings</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="philtomson.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Cooperative Concurrency in OCaml: A Core.Std.Async Example</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-07-09T13:39:00-07:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>9</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>1:39 pm</span></time>
+        
+           | <a href="#disqus_thread"
+             data-disqus-identifier="http://philtomson.github.io">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>I&rsquo;ve been working on an OCaml <a href="http://mqtt.org/">Mqtt</a> client for eventual use with <a href="http://mirageos.org/">MirageOS</a>. Mqtt is a lightweight publish/subscribe messaging transport protocol that&rsquo;s aimed at embedded systems and IoT applications. Without going into much detail about the protocol, implementing it requires some form of concurrency as there is a keep-alive ping that needs to be sent from the client to the broker at regular intervals to keep the connection alive. The client can also be receiving messages from the broker and needs to be able to queue up those messages for processing.</p>
+
+<p>When considering concurrency options for OCaml, I thought I&rsquo;d give Core.Std.Async (from here on, I&rsquo;ll just refer to it as Async) a try as it&rsquo;s covered in pretty good detail in <a href="https://realworldocaml.org/v1/en/html/concurrent-programming-with-async.html">chapter 18 of Real World OCaml</a>. Of course, I didn&rsquo;t see exactly what I needed in the examples there, so I had to play with a toy producer/consumer example for a bit. The code appears below, hopefully you&rsquo;ll find it useful if you want to try out Async:</p>
+
+<figure class='code'><figcaption><span>[ ] [title: producer_consumer.ml] </span></figcaption>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+</pre></td><td class='code'><pre><code class='ocaml'><span class='line'><span class="c">(* compile with:</span>
+</span><span class='line'><span class="c">   corebuild -pkg async,unix  producer_consumer.native</span>
+</span><span class='line'><span class="c">*)</span>
+</span><span class='line'><span class="k">open</span> <span class="nc">Sys</span>
+</span><span class='line'><span class="k">open</span> <span class="nn">Async</span><span class="p">.</span><span class="nc">Std</span>
+</span><span class='line'><span class="k">open</span> <span class="nc">Core</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">let</span> <span class="o">(</span><span class="n">r</span><span class="o">,</span><span class="n">w</span><span class="o">)</span> <span class="o">=</span> <span class="nn">Pipe</span><span class="p">.</span><span class="n">create</span> <span class="bp">()</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">(* producer *)</span>
+</span><span class='line'><span class="k">let</span> <span class="n">countup</span> <span class="n">hi</span> <span class="n">w</span> <span class="o">=</span>
+</span><span class='line'>  <span class="k">let</span> <span class="k">rec</span> <span class="n">loop</span> <span class="n">i</span> <span class="o">=</span>
+</span><span class='line'>    <span class="n">printf</span> <span class="s2">&quot;i=%d</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="n">i</span> <span class="o">;</span>
+</span><span class='line'>    <span class="k">if</span> <span class="o">(</span><span class="n">i</span> <span class="o">&lt;</span> <span class="n">hi</span> <span class="o">&amp;&amp;(</span> <span class="n">not</span> <span class="o">(</span><span class="nn">Pipe</span><span class="p">.</span><span class="n">is_closed</span> <span class="n">w</span><span class="o">)))</span> <span class="k">then</span>
+</span><span class='line'>       <span class="nn">Pipe</span><span class="p">.</span><span class="n">write</span> <span class="n">w</span> <span class="n">i</span> <span class="o">&gt;&gt;&gt;</span>
+</span><span class='line'>       <span class="k">fun</span> <span class="bp">()</span> <span class="o">-&gt;</span> <span class="n">loop</span> <span class="o">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="o">)</span>
+</span><span class='line'>     <span class="k">else</span> <span class="nn">Pipe</span><span class="p">.</span><span class="n">close</span> <span class="n">w</span>
+</span><span class='line'>  <span class="k">in</span>
+</span><span class='line'>  <span class="n">loop</span> <span class="mi">0</span> <span class="o">;;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">(* consumer *)</span>
+</span><span class='line'><span class="k">let</span> <span class="k">rec</span> <span class="n">readloop</span> <span class="n">r</span> <span class="o">=</span>
+</span><span class='line'>  <span class="nn">Pipe</span><span class="p">.</span><span class="n">read</span> <span class="n">r</span> <span class="o">&gt;&gt;=</span>
+</span><span class='line'>  <span class="k">function</span>
+</span><span class='line'>  <span class="o">|</span> <span class="o">`</span><span class="nc">Eof</span> <span class="o">-&gt;</span> <span class="n">return</span> <span class="bp">()</span>
+</span><span class='line'>  <span class="o">|</span> <span class="o">`</span><span class="nc">Ok</span> <span class="n">v</span> <span class="o">-&gt;</span> <span class="n">return</span> <span class="o">(</span><span class="n">printf</span> <span class="s2">&quot;Got %d</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="n">v</span><span class="o">)</span> <span class="o">&gt;&gt;=</span>
+</span><span class='line'>             <span class="k">fun</span> <span class="bp">()</span> <span class="o">-&gt;</span> <span class="n">after</span> <span class="o">(</span><span class="nn">Time</span><span class="p">.</span><span class="nn">Span</span><span class="p">.</span><span class="n">of_sec</span> <span class="mi">0</span><span class="o">.</span><span class="mi">5</span><span class="o">)</span> <span class="o">&gt;&gt;=</span>
+</span><span class='line'>             <span class="k">fun</span> <span class="bp">()</span> <span class="o">-&gt;</span> <span class="n">readloop</span> <span class="n">r</span>  <span class="o">;;</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="k">let</span> <span class="bp">()</span> <span class="o">=</span>
+</span><span class='line'>  <span class="nn">Pipe</span><span class="p">.</span><span class="n">set_size_budget</span> <span class="n">r</span> <span class="mi">256</span>  <span class="o">;</span>
+</span><span class='line'>  <span class="n">countup</span> <span class="mi">10</span> <span class="n">w</span><span class="o">;</span>
+</span><span class='line'>  <span class="n">ignore</span><span class="o">(</span><span class="n">readloop</span> <span class="n">r</span><span class="o">);</span>
+</span><span class='line'>  <span class="nn">Core</span><span class="p">.</span><span class="nn">Never_returns</span><span class="p">.</span><span class="n">never_returns</span> <span class="o">(</span><span class="nn">Scheduler</span><span class="p">.</span><span class="n">go</span> <span class="bp">()</span><span class="o">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Async falls under the category of cooperative concurrency along with other frameworks that have an event loop like Python&rsquo;s Twisted and Node.js. Preemptive concurrency is on the other side of the concurrency divide, and generally involves threads and mutexes. Cooperative concurrency is usually done by passing callbacks to functions that get called after some call in the function has returned data. Node.js is famous for this: you need to read data from some other website, for example, so you call your function for doing this and pass a callback to it that will actually return the data after it becomes available. Meanwhile instead of blocking waiting for the data to come back your program has gone on to call other functions in the event loop. This works fairly nicely (for some value of <em>nicely</em>) in Javascript where there are very few blocking calls&hellip; but note that <a href="http://callbackhell.com/">callback hell</a> is a thing as callbacks get nested into callbacks sometimes several layers deep.</p>
+
+<p>Async works a bit differently, at least on the surface, from the asynchronous style of Javascript used in Node.js and this seems to help avoid the nested callback problem. Async is very monadic and that seems to help. Well-behaved Async functions don&rsquo;t block, but instead return a value of type <em>Deferred.t</em> (Async.Deferred.t). A <em>&lsquo;a Deferred.t</em> value is kind of like a <em>promise</em> in some other languages, a promise that the value you seek will be computed sometime in the future. There&rsquo;s a scheduler that schedules these deferred events.</p>
+
+<p>In addition, Async also has these very handy <em>Pipe</em> thingys that are basically FIFOs that connect different parts of your program together in a way that is reminiscent of <a href="http://en.wikipedia.org/wiki/Kahn_process_networks">Kahn Process Networks</a>. (Async Pipes don&rsquo;t have anything to do with Unix pipes other than a very surfacy resemblence)</p>
+
+<p>You&rsquo;ll notice that a <em>Pipe</em> is created at line 5 of the code above where <em>r</em> is the reader end of the pipe and <em>w</em> is the writer end. The <em>countup</em> function is our producer and simply counts up to a value passed in. On every iteration of the <em>loop</em> the new count value gets writen to the pipe at line 12 ( <em>Pipe.write w i</em> ). Notice that there&rsquo;s an <em>>>></em> operator at the end of that line. This is also called <em>upon</em> and could also have been written as: <em>upon (Pipe.write w i) (fun () -> loop (i+1))</em>. <em>upon</em> has the following type: <em>&lsquo;a Deferred.t -> ('a -> unit) -> unit</em>.  When the deferred value that&rsquo;s passed into <em>upon</em> is determined, the callback will be called, in this case we call <em>loop (i+1)</em> and recurse.</p>
+
+<p>The readloop function (starting at line 19) uses the bind operator ( >>= ) which has the type: <em>&lsquo;a Deferred.t -> ('a -> 'b Deferred.t) -> 'b Deferred.t</em>. When the deferred value of <em>Pipe.read r</em>  is determined, the result is passed into the callback function which will print what was received from the pipe (on success), then wait a half second before going on to call <em>readloop</em> again. For more details about the sequencing operators >>= (<em>bind</em>), >>> (<em>upon</em>) and >>| (<em>map</em>) have a look at the <em>Real World OCaml</em> link above. Notice that we use <em>return</em> to wrap a value in a
+<em>Deferred.t</em> (the type of <em>return</em> is <em>'a -> 'a Deferred.t</em>) in order to make <em>readloop</em> type-check and compile as <em>readloop</em>&rsquo;s type is: <em>int Pipe.Reader.t -> unit Deferred.t</em>.</p>
+
+<p>So <em>countup</em> writes values to the <em>Pipe</em> while <em>readloop</em> reads values from it at half second intervals. If you compile this program and run it you&rsquo;ll see:</p>
+
+<pre><code>i=0
+i=1
+Got 0
+i=2
+i=3
+i=4
+i=5
+i=6
+i=7
+i=8
+i=9
+i=10
+Got 1
+Got 2
+Got 3
+Got 4
+Got 5
+Got 6
+Got 7
+Got 8
+Got 9
+</code></pre>
+
+<p>The first lines up until &lsquo;i=10&rsquo; come out pretty much instantaneously, while the next lines (&lsquo;Got 1&rsquo; through &lsquo;Got 9&rsquo;) came out every half second.</p>
+
+<p>However&hellip; Notice line 32 of the code above: <em>Pipe.set_size_budget r 256  ;</em>
+Initially I thought (based on the explanation in RWO) that <em>Pipe</em>s were queues of infinite length. I didn&rsquo;t know you had to <em>set_size_budget</em> on the Pipe. So earlier attempts omitted line 32 above and I got the following result:</p>
+
+<pre><code>i=0
+i=1
+Got 0
+i=2
+Got 1
+i=3
+Got 2
+i=4
+Got 3
+i=5
+Got 4
+i=6
+Got 5
+i=7
+Got 6
+i=8
+Got 7
+i=9
+Got 8
+i=10
+Got 9
+</code></pre>
+
+<p>(With a half second delay between each &lsquo;Got&rsquo; message)</p>
+
+<p>The <em>Pipe.write</em> seemed to block waiting for a <em>Pipe.read</em> which didn&rsquo;t seem right given the description of <em>Pipe</em> in RWO. But as it turns out the pipe size defaults to 0 which means that the pipe fills up immediately. To get a deeper pipe, you need to call <em>set_budget_size</em> on the pipe (either end, apparently) as shown on line 32 of the code above. (Aside: It seems like there should be an optional parameter <em>budget_size</em> to the <em>Pipe.create</em> function.)</p>
+
+<p><strong>Conclusions</strong></p>
+
+<p>While in essense we&rsquo;re still using callbacks in our event loop (very Javascript/Node.js-ish), the monadic sequencing operators >>=, >>| and >>> do seem to make the code easier to read and reason about. Add in the handy <em>Pipe</em>s and it&rsquo;s not a bad way to do concurrency, really, once you get the hang of dealing with the monads. It should be noted, however, that as in most cooperative concurrency schemes, you&rsquo;re only going to be using one core of your processor.</p>
+
+<p>Finally&hellip; I&rsquo;m pretty new to Core and Async so if I&rsquo;ve made some mistakes here in the explanation or if the code could be more elegant please don&rsquo;t hesitate to let me know in the comments.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Phil Tomson</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2014-07-09T13:39:00-07:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>9</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>1:39 pm</span></time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2014/05/30/stop-the-presses-ocaml-wins/" title="Previous Post: Stop the presses: OCaml wins in terms of speed">&laquo; Stop the presses: OCaml wins in terms of speed</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2014/09/10/some-notes-on-building-and-running-mirage-unikernels-on-cubieboard2/" title="Next Post: Some Notes on Building and Running Mirage Unikernels on Cubieboard2">Some Notes on Building and Running Mirage Unikernels on Cubieboard2 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2017/02/02/funemployment/">FUNemployment</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/09/10/some-notes-on-building-and-running-mirage-unikernels-on-cubieboard2/">Some Notes on Building and Running Mirage Unikernels on Cubieboard2</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/07/09/core-dot-async-example/">Cooperative Concurrency in OCaml: A Core.Std.Async Example</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/05/30/stop-the-presses-ocaml-wins/">Stop the Presses: OCaml Wins in Terms of Speed</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/05/29/comparing-a-machine-learning-algorithm-implemented-in-f-number-and-ocaml/">Comparing a Machine Learning Algorithm Implemented in F# and OCaml</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/philtomson">@philtomson</a> on GitHub
+  
+  <script type="text/javascript">
+    $(document).ready(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'philtomson',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2017 - Phil Tomson -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'mylittlegardenofcode';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://philtomson.github.io/blog/2014/07/09/core-dot-async-example/';
+        var disqus_url = 'http://philtomson.github.io/blog/2014/07/09/core-dot-async-example/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
