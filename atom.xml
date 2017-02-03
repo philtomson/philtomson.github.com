@@ -4,7 +4,7 @@
   <title><![CDATA[My Little Garden of Code]]></title>
   <link href="http://philtomson.github.io/atom.xml" rel="self"/>
   <link href="http://philtomson.github.io/"/>
-  <updated>2017-02-02T17:21:37-08:00</updated>
+  <updated>2017-02-03T15:54:21-08:00</updated>
   <id>http://philtomson.github.io/</id>
   <author>
     <name><![CDATA[Phil Tomson]]></name>
@@ -22,7 +22,7 @@
 
 <p>Since I last posted in 2014 it seems that Octopress has been updated. I had to go back to my old desktop machine and find where all the blog-related files were and transfer them to my current desktop machine. Of course I tried looking at the Octopress documentation to figure out how it works since I&rsquo;d completely forgotten in the last ~2.5 years. And of course, the docs no longer cover the old version of Octopress. So I went with the newer version and tried moving things over. For the most part it works. The twitter button that used to be over there on the right doesn&rsquo;t seem to want to show up anymore and I have no idea why (it&rsquo;s right there in the _config.yml). And pygments now seems to want a space between the language name and the &lsquo;]&rsquo; - so whereas &lsquo;[lang:ocaml]&rsquo; used to work for the code highlighting incantation, now it seems to want &lsquo;[lang:ocaml ]&rsquo; &hellip; weird.</p>
 
-<p>So now that the blog <em>mostly</em> seems to be working again, I&rsquo;m going to be looking into BNNs <a href="https://arxiv.org/pdf/1602.02830v3.pdf.">(Binarized Neural Networks)</a>. Weights in BNNs are represented as binary values and instead of matrix multiplecations (as is common in regular neural nets) the main operation on binary weights is XNOR which is a lot faster and more amenable for implementation in hardware like FPGAs. But more on BNNs later, I hope to start blogging about my BNN investigations which is why I wanted to get the blog going again.</p>
+<p>So now that the blog <em>mostly</em> seems to be working again, I&rsquo;m going to be looking into BNNs <a href="https://arxiv.org/pdf/1602.02830v3.pdf.">(Binarized Neural Networks)</a>. Weights in BNNs are represented as binary values and instead of matrix multiplications (as is common in regular neural nets) the main operation on binary weights is XNOR which is a lot faster and more amenable for implementation in hardware like FPGAs. But more on BNNs later, I hope to start blogging about my BNN investigations which is why I wanted to get the blog going again.</p>
 ]]></content>
   </entry>
   
