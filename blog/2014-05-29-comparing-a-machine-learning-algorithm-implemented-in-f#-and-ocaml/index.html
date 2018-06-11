@@ -435,7 +435,7 @@ sys         0m0.116s
 
 <p>The code is very similar. The OCaml version is a bit longer because I needed to implement some functions that are built into the F# library, specifically, <em>minBy</em> (<em>Array.minBy</em> is built in to thd F# standard lib), <em>list_sum</em> (<em>Array.sum</em> is the F# builtin function) and <em>read_lines</em> (<em>File.ReadAllLines</em> is the F# builtin). One difference that could possibly effect performance: The F# version reads the data into *Array*s whereas the OCaml version reads the data into *List*s. The OCaml version was just easier to read into a <em>List</em> and OCaml&rsquo;s <em>List</em> module has a <em>map2</em> function whereas OCaml&rsquo;s <em>Array</em> module does not (F# apparently has a <em>map2</em> for both <em>Array</em> and <em>List</em>).</p>
 
-<p>(EDIT: But as it turns out, using a List here instead of an Array is probably responsible for about <sup>1</sup>&frasl;<sub>2</sub> of the performance difference between the F# and the OCaml version. See <a href="(http://philtomson.github.io/blog/2014/05/30/stop-the-presses-ocaml-wins/)">the update</a></p>
+<p>(EDIT: But as it turns out, using a List here instead of an Array is probably responsible for about half of the performance difference between the F# and the OCaml version. See <a href="(http://philtomson.github.io/blog/2014/05/30/stop-the-presses-ocaml-wins/)">the update</a></p>
 
 <p>I was surprised how much less performant the OCaml version was:</p>
 
