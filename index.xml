@@ -73,11 +73,11 @@ The main problem was pointed out by Kim Nguyễn in the comments:
     </item>
     
     <item>
-      <title>Comparing a Machine Learning algorithm implemented in F# and OCaml</title>
-      <link>https://philtomson.github.io/blog/2014-05-29-comparing-a-machine-learning-algorithm-implemented-in-f#-and-ocaml/</link>
+      <title>Comparing a Machine Learning algorithm implemented in F Sharp and OCaml</title>
+      <link>https://philtomson.github.io/blog/2014-05-29-comparing-a-machine-learning-algorithm-implemented-in-f-sharp-and-ocaml/</link>
       <pubDate>Thu, 29 May 2014 00:00:00 +0000</pubDate>
       
-      <guid>https://philtomson.github.io/blog/2014-05-29-comparing-a-machine-learning-algorithm-implemented-in-f#-and-ocaml/</guid>
+      <guid>https://philtomson.github.io/blog/2014-05-29-comparing-a-machine-learning-algorithm-implemented-in-f-sharp-and-ocaml/</guid>
       <description>(UPDATE: please see the next post: Stop the Presses: OCaml wins in terms of speed in which it is shown that there were some serious flaws in my OCaml implementation below. I&amp;rsquo;ll keep this post around for reference.)
 I&amp;rsquo;ve been dabbling with OCaml for the last several years and so when I saw a recent Meetup notice about an F# machine learning code dojo being led by Mathias Brandewinder within walking distance of my house I thought I&amp;rsquo;d check it out.</description>
     </item>
