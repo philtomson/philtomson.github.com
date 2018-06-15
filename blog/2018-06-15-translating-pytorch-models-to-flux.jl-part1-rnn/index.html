@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+<head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width,minimum-scale=1,maximum-scale=1">
+
+  
+    
+    
+      <link href="/css/fonts.css" rel="stylesheet" type="text/css">
+    
+  
+
+  
+  <title>Translating PyTorch models to Flux.jl Part1: RNN</title>
+
+  
+  
+  <link rel="stylesheet" href="/css/hugo-octopress.css">
+
+  
+  
+
+  
+    <link rel="stylesheet" href="/css/fork-awesome.min.css">
+  
+
+  
+  <link href="https://philtomson.github.io/favicon.png" rel="icon">
+
+  
+  
+  
+
+  
+
+  <meta name="description" content="">
+  <meta name="keywords" content="">
+
+  <meta name="author" content="">
+
+  
+  <meta name="generator" content="Hugo 0.40.1" />
+
+  
+  
+
+  
+  
+
+</head>
+<body>
+
+
+<header role="banner"><hgroup>
+  
+  <h1><a href="https://philtomson.github.io/">My Little Garden of Code</a></h1>
+    <h2></h2>
+</hgroup></header>
+
+
+<nav role="navigation">
+<fieldset class="mobile-nav">
+  
+  <select onchange="location = this.value;">
+    <option value="">Navigate…</option>
+      
+        <option value="https://philtomson.github.io/">» Home</option>
+      
+
+  </select>
+</fieldset>
+
+
+<ul class="main-navigation">
+  
+  
+    
+      <li><a href="https://philtomson.github.io/" title="Home">Home</a></li>
+    
+  
+</ul>
+
+
+<ul class="subscription">
+  
+
+</ul>
+
+
+</nav>
+
+
+<div id="main">
+  <div id="content">
+    <div>
+      <article class="hentry" role="article">
+
+        
+        
+
+<header>
+    <p class="meta">Jun 15, 2018
+         - 4 minute read 
+         - <a href="https://philtomson.github.io/blog/2018-06-15-translating-pytorch-models-to-flux.jl-part1-rnn/#disqus_thread">Comments</a>
+
+        
+    </p>
+    <h1 class="entry-title">
+        <a href="https://philtomson.github.io/blog/2018-06-15-translating-pytorch-models-to-flux.jl-part1-rnn/">Translating PyTorch models to Flux.jl Part1: RNN</a>
+    </h1>
+</header>
+
+
+        <div class="entry-content">
+          
+          
+          
+          
+          <p><a href="http://fluxml.ai/Flux.jl/stable/">Flux.jl</a> is a machine learning framework built in Julia. It has some similarities to PyTorch, and like most modern frameworks includes autodifferentiation. It&rsquo;s definitely still a work in progress, but it is being actively developed (including several GSoC projects this summer).</p>
+
+<p>I was curious about how easy/difficult it might be to convert a PyTorch model into Flux.jl. I found a fairly simple <a href="https://www.cpuheater.com/deep-learning/introduction-to-recurrent-neural-networks-in-pytorch/">PyTorch tutorial on RNNs</a> to translate. My goal here isn&rsquo;t to explain RNNs (see the <a href="https://www.cpuheater.com/deep-learning/introduction-to-recurrent-neural-networks-in-pytorch/">linked article</a> for that) - my intent is to see what is required to go from the PyTorch/Python ecosystem to the Flux.jl/Julia ecosystem.</p>
+
+<p>Let&rsquo;s start with the PyTorch code:</p>
+
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">38
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">39
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">40
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">41
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">42
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">43
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">44
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">45
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">46
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">47
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">48
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">49
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">50
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">51
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">52
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">53
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">54
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">55
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">56
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">57
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">58
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">59
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">60
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">61
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">62
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">63
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">64
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">65
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">66
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">67
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">68
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> torch
+<span style="color:#f92672">from</span> torch.autograd <span style="color:#f92672">import</span> Variable
+<span style="color:#f92672">import</span> numpy <span style="color:#f92672">as</span> np
+<span style="color:#f92672">import</span> pylab <span style="color:#f92672">as</span> pl
+<span style="color:#f92672">import</span> torch.nn.init <span style="color:#f92672">as</span> init
+
+
+torch<span style="color:#f92672">.</span>manual_seed(<span style="color:#ae81ff">1</span>)
+
+dtype <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>FloatTensor
+input_size, hidden_size, output_size <span style="color:#f92672">=</span> <span style="color:#ae81ff">7</span>, <span style="color:#ae81ff">6</span>, <span style="color:#ae81ff">1</span>
+epochs <span style="color:#f92672">=</span> <span style="color:#ae81ff">200</span>
+seq_length <span style="color:#f92672">=</span> <span style="color:#ae81ff">20</span>
+lr <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.1</span>
+
+data_time_steps <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>linspace(<span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">10</span>, seq_length <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>)
+data <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>sin(data_time_steps)
+data<span style="color:#f92672">.</span>resize((seq_length <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>))
+
+x <span style="color:#f92672">=</span> Variable(torch<span style="color:#f92672">.</span>Tensor(data[:<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>])<span style="color:#f92672">.</span>type(dtype), requires_grad<span style="color:#f92672">=</span>False)
+y <span style="color:#f92672">=</span> Variable(torch<span style="color:#f92672">.</span>Tensor(data[<span style="color:#ae81ff">1</span>:])<span style="color:#f92672">.</span>type(dtype), requires_grad<span style="color:#f92672">=</span>False)
+
+w1 <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>FloatTensor(input_size, hidden_size)<span style="color:#f92672">.</span>type(dtype)
+init<span style="color:#f92672">.</span>normal(w1, <span style="color:#ae81ff">0.0</span>, <span style="color:#ae81ff">0.4</span>)
+w1 <span style="color:#f92672">=</span>  Variable(w1, requires_grad<span style="color:#f92672">=</span>True)
+w2 <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>FloatTensor(hidden_size, output_size)<span style="color:#f92672">.</span>type(dtype)
+init<span style="color:#f92672">.</span>normal(w2, <span style="color:#ae81ff">0.0</span>, <span style="color:#ae81ff">0.3</span>)
+w2 <span style="color:#f92672">=</span> Variable(w2, requires_grad<span style="color:#f92672">=</span>True)
+
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">forward</span>(input, context_state, w1, w2):
+  xh <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>cat((input, context_state), <span style="color:#ae81ff">1</span>)
+  context_state <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>tanh(xh<span style="color:#f92672">.</span>mm(w1))
+  out <span style="color:#f92672">=</span> context_state<span style="color:#f92672">.</span>mm(w2)
+  <span style="color:#66d9ef">return</span>  (out, context_state)
+
+<span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(epochs):
+  total_loss <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+  context_state <span style="color:#f92672">=</span> Variable(torch<span style="color:#f92672">.</span>zeros((<span style="color:#ae81ff">1</span>, hidden_size))<span style="color:#f92672">.</span>type(dtype), requires_grad<span style="color:#f92672">=</span>True)
+  <span style="color:#66d9ef">for</span> j <span style="color:#f92672">in</span> range(x<span style="color:#f92672">.</span>size(<span style="color:#ae81ff">0</span>)):
+    input <span style="color:#f92672">=</span> x[j:(j<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>)]
+    target <span style="color:#f92672">=</span> y[j:(j<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>)]
+    (pred, context_state) <span style="color:#f92672">=</span> forward(input, context_state, w1, w2)
+    loss <span style="color:#f92672">=</span> (pred <span style="color:#f92672">-</span> target)<span style="color:#f92672">.</span>pow(<span style="color:#ae81ff">2</span>)<span style="color:#f92672">.</span>sum()<span style="color:#f92672">/</span><span style="color:#ae81ff">2</span>
+    total_loss <span style="color:#f92672">+=</span> loss
+    loss<span style="color:#f92672">.</span>backward()
+    w1<span style="color:#f92672">.</span>data <span style="color:#f92672">-=</span> lr <span style="color:#f92672">*</span> w1<span style="color:#f92672">.</span>grad<span style="color:#f92672">.</span>data
+    w2<span style="color:#f92672">.</span>data <span style="color:#f92672">-=</span> lr <span style="color:#f92672">*</span> w2<span style="color:#f92672">.</span>grad<span style="color:#f92672">.</span>data
+    w1<span style="color:#f92672">.</span>grad<span style="color:#f92672">.</span>data<span style="color:#f92672">.</span>zero_()
+    w2<span style="color:#f92672">.</span>grad<span style="color:#f92672">.</span>data<span style="color:#f92672">.</span>zero_()
+    context_state <span style="color:#f92672">=</span> Variable(context_state<span style="color:#f92672">.</span>data)
+  <span style="color:#66d9ef">if</span> i <span style="color:#f92672">%</span> <span style="color:#ae81ff">10</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>:
+     <span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#34;Epoch: {} loss {}&#34;</span><span style="color:#f92672">.</span>format(i, total_loss<span style="color:#f92672">.</span>data[<span style="color:#ae81ff">0</span>]))
+
+
+context_state <span style="color:#f92672">=</span> Variable(torch<span style="color:#f92672">.</span>zeros((<span style="color:#ae81ff">1</span>, hidden_size))<span style="color:#f92672">.</span>type(dtype), requires_grad<span style="color:#f92672">=</span>False)
+predictions <span style="color:#f92672">=</span> []
+
+<span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(x<span style="color:#f92672">.</span>size(<span style="color:#ae81ff">0</span>)):
+  input <span style="color:#f92672">=</span> x[i:i<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>]
+  (pred, context_state) <span style="color:#f92672">=</span> forward(input, context_state, w1, w2)
+  context_state <span style="color:#f92672">=</span> context_state
+  predictions<span style="color:#f92672">.</span>append(pred<span style="color:#f92672">.</span>data<span style="color:#f92672">.</span>numpy()<span style="color:#f92672">.</span>ravel()[<span style="color:#ae81ff">0</span>])
+
+
+pl<span style="color:#f92672">.</span>scatter(data_time_steps[:<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>], x<span style="color:#f92672">.</span>data<span style="color:#f92672">.</span>numpy(), s<span style="color:#f92672">=</span><span style="color:#ae81ff">90</span>, label<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Actual&#34;</span>)
+pl<span style="color:#f92672">.</span>scatter(data_time_steps[<span style="color:#ae81ff">1</span>:], predictions, label<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Predicted&#34;</span>)
+pl<span style="color:#f92672">.</span>legend()
+pl<span style="color:#f92672">.</span>show()</code></pre></td></tr></table>
+</div>
+</div>
+
+<p>And now the Flux.jl version in Julia:</p>
+
+<p><div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-julia" data-lang="julia"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">38
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">39
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">40
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">41
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">42
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">43
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">44
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">45
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">46
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">47
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">48
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">49
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">50
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">51
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">52
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">53
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">54
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">55
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">56
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">57
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">58
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">59
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">60
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">61
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">62
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">63
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">64
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-julia" data-lang="julia"><span style="color:#66d9ef">using</span> Flux
+<span style="color:#66d9ef">using</span> Flux<span style="color:#f92672">.</span>Tracker
+<span style="color:#66d9ef">using</span> Plots
+
+srand(<span style="color:#ae81ff">1</span>)
+
+input_size, hidden_size, output_size <span style="color:#f92672">=</span> <span style="color:#ae81ff">7</span>, <span style="color:#ae81ff">6</span>, <span style="color:#ae81ff">1</span>
+epochs <span style="color:#f92672">=</span> <span style="color:#ae81ff">200</span>
+seq_length <span style="color:#f92672">=</span> <span style="color:#ae81ff">20</span>
+lr <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.1</span>
+
+data_time_steps <span style="color:#f92672">=</span> linspace(<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">10</span>, seq_length<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>)
+data <span style="color:#f92672">=</span> sin<span style="color:#f92672">.</span>(data_time_steps)
+
+x <span style="color:#f92672">=</span> data[<span style="color:#ae81ff">1</span><span style="color:#f92672">:</span><span style="color:#66d9ef">end</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]
+y <span style="color:#f92672">=</span> data[<span style="color:#ae81ff">2</span><span style="color:#f92672">:</span><span style="color:#66d9ef">end</span>]
+
+w1 <span style="color:#f92672">=</span> param(randn(input_size,  hidden_size))
+w2 <span style="color:#f92672">=</span> param(randn(hidden_size, output_size)) 
+
+<span style="color:#66d9ef">function</span> forward(input, context_state, W1, W2)
+   <span style="color:#75715e">#xh = cat(2,input, context_state) </span>
+   <span style="color:#75715e">#  Due to a Flux bug you have to do:</span>
+   xh <span style="color:#f92672">=</span> cat(<span style="color:#ae81ff">2</span>, Tracker<span style="color:#f92672">.</span>collect(input), context_state) 
+   context_state <span style="color:#f92672">=</span> tanh<span style="color:#f92672">.</span>(xh<span style="color:#f92672">*</span>W1)
+   out <span style="color:#f92672">=</span> context_state<span style="color:#f92672">*</span>W2
+   <span style="color:#66d9ef">return</span> out, context_state
+<span style="color:#66d9ef">end</span>
+
+<span style="color:#66d9ef">function</span> train() 
+   <span style="color:#66d9ef">for</span> i <span style="color:#66d9ef">in</span> <span style="color:#ae81ff">1</span><span style="color:#f92672">:</span>epochs
+      total_loss <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+      context_state <span style="color:#f92672">=</span> param(zeros(<span style="color:#ae81ff">1</span>,hidden_size))
+      <span style="color:#66d9ef">for</span> j <span style="color:#66d9ef">in</span> <span style="color:#ae81ff">1</span><span style="color:#f92672">:</span>length(x)
+        input <span style="color:#f92672">=</span> x[j]
+        target<span style="color:#f92672">=</span> y[j]
+        pred, context_state <span style="color:#f92672">=</span> forward(input, context_state, w1, w2)
+        loss <span style="color:#f92672">=</span> sum((pred <span style="color:#f92672">.-</span> target)<span style="color:#f92672">.^</span><span style="color:#ae81ff">2</span>)<span style="color:#f92672">/</span><span style="color:#ae81ff">2</span>
+        total_loss <span style="color:#f92672">+=</span> loss
+        back!(loss)
+        w1<span style="color:#f92672">.</span>data <span style="color:#f92672">.-=</span> lr<span style="color:#f92672">.*</span>w1<span style="color:#f92672">.</span>grad
+        w2<span style="color:#f92672">.</span>data <span style="color:#f92672">.-=</span> lr<span style="color:#f92672">.*</span>w2<span style="color:#f92672">.</span>grad
+        w1<span style="color:#f92672">.</span>grad <span style="color:#f92672">.=</span> <span style="color:#ae81ff">0.0</span>
+        w2<span style="color:#f92672">.</span>grad <span style="color:#f92672">.=</span> <span style="color:#ae81ff">0.0</span> 
+        context_state <span style="color:#f92672">=</span> param(context_state<span style="color:#f92672">.</span>data)
+      <span style="color:#66d9ef">end</span>
+      <span style="color:#66d9ef">if</span>(i <span style="color:#f92672">%</span> <span style="color:#ae81ff">10</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>)
+        println(<span style="color:#e6db74">&#34;Epoch: </span><span style="color:#e6db74">$i</span><span style="color:#e6db74">  loss: </span><span style="color:#e6db74">$total_loss</span><span style="color:#e6db74">&#34;</span>)
+      <span style="color:#66d9ef">end</span>
+   <span style="color:#66d9ef">end</span>
+<span style="color:#66d9ef">end</span>
+
+train()
+
+context_state <span style="color:#f92672">=</span> param(zeros(<span style="color:#ae81ff">1</span>,hidden_size))
+predictions <span style="color:#f92672">=</span> []
+
+<span style="color:#66d9ef">for</span> i <span style="color:#66d9ef">in</span> <span style="color:#ae81ff">1</span><span style="color:#f92672">:</span>length(x)
+  input <span style="color:#f92672">=</span> x[i]
+  pred, context_state <span style="color:#f92672">=</span> forward(input, context_state, w1, w2)
+  append!(predictions, pred<span style="color:#f92672">.</span>data)
+<span style="color:#66d9ef">end</span>
+scatter(data_time_steps[<span style="color:#ae81ff">1</span><span style="color:#f92672">:</span><span style="color:#66d9ef">end</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>], x, label<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;actual&#34;</span>)
+scatter!(data_time_steps[<span style="color:#ae81ff">2</span><span style="color:#f92672">:</span><span style="color:#66d9ef">end</span>],predictions, label<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;predicted&#34;</span>)</code></pre></td></tr></table>
+</div>
+</div></p>
+
+<p>The Flux.jl/Julia version is very similar to the PyTorch/Python version.
+A few notable differences:</p>
+
+<ul>
+<li>Numpy functionality is builtin to Julia. No need to import numpy.</li>
+<li>torch.Variable maps to Flux.param</li>
+<li>x and y are type torch.Variable in the PyTorch version, while they&rsquo;re just regular builtin matrices on the Julia side.</li>
+<li>Flux.param(var) indicates that the variable <em>var</em> will be tracked for the purposes of determining gradients (just as torch.Variable).</li>
+<li>I did run into a bug in Flux.jl; you&rsquo;ll notice the workaround on line 24. Ultimately, when the bug is fixed you&rsquo;ll be able to uncomment line 22 and eliminate line 24. The bug had to do with how certain tracked collections are translated to scalar types. The tracking is required for back propagation and the problem was that the <em>input</em> being passed into the <em>foward</em> function would get another level of unnecessary tracking each time <em>forward</em> was called.</li>
+<li>&rsquo;.&rsquo; prior to an operator (such as at line 41 in the Julia code) indicates a broadcasting operation in Julia. Note also line &lsquo;.&rsquo; after the tanh at line 25, it indicates that the tanh is broadcast to the matrix that results from xh*W1. (From what I can tell, numpy sort of automatically determines whether an operation should broadcast or not based on the dimensions of the operands - Julia is more explicit about this.)</li>
+<li>Even the plotting at the end is very similar between the two versions.</li>
+</ul>
+
+        </div>
+        
+
+<footer>
+  <p class="meta">
+    <span class="byline author vcard">Posted by <span class="fn"></span></span>
+    
+    <time>Jun 15, 2018</time>
+    
+    </span>
+  </p>
+
+  
+  
+
+  
+
+  <p class="meta">
+    
+        <a class="basic-alignment left" href="https://philtomson.github.io/blog/2018-06-11-migrated-blog-from-octopress-to-hugo/" title="Migrated blog from Octopress to Hugo">Migrated blog from Octopress to Hugo</a>
+    
+
+    
+  </p>
+  
+    
+      <div id="disqus_thread"></div>
+<script type="text/javascript">
+
+(function() {
+    
+    
+    
+    if (window.location.hostname == "localhost")
+        return;
+
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    var disqus_shortname = 'mylittlegardenofcode';
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+    
+  
+</footer>
+
+      </article>
+    </div>
+    
+
+<aside class="sidebar thirds">
+  <section class="first odd">
+
+    
+
+    <p>
+      
+    </p>
+  </section>
+
+
+
+  
+  <ul class="sidebar-nav">
+    <li class="sidebar-nav-item">
+      <a target="_blank" href="https://github.com/philtomson/" title="https://github.com/philtomson/"><i class="fa fa-github fa-3x"></i></a>
+      
+      
+      
+      
+         
+      
+      
+      <a target="_blank" href="https://stackoverflow.com/users/46190/aneccodeal" title="https://stackoverflow.com/users/46190/aneccodeal"><i class="fa fa-stack-overflow fa-3x"></i></a>
+      
+      
+      
+      
+      
+
+    
+    
+    </li>
+  </ul>
+
+  
+
+  
+
+  
+  
+  
+    
+      <section class="even">
+        <h1>Recent Posts</h1>
+        <ul id="recent_posts">
+          
+          
+            
+              <li class="post">
+                <a href="/blog/2018-06-15-translating-pytorch-models-to-flux.jl-part1-rnn/">Translating PyTorch models to Flux.jl Part1: RNN</a>
+              </li>
+            
+          
+            
+              <li class="post">
+                <a href="/blog/2018-06-11-migrated-blog-from-octopress-to-hugo/">Migrated blog from Octopress to Hugo</a>
+              </li>
+            
+          
+            
+              <li class="post">
+                <a href="/blog/2017-02-06-testing-mathjax/">Testing MathJax</a>
+              </li>
+            
+          
+            
+              <li class="post">
+                <a href="/blog/2017-02-02-funemployment/">FUNemployment</a>
+              </li>
+            
+          
+            
+              <li class="post">
+                <a href="/blog/2014-09-10-some-notes-on-building-and-running-mirage-unikernels-on-cubieboard2/">Some notes on building and running mirage unikernels on Cubieboard2</a>
+              </li>
+            
+          
+        </ul>
+      </section>
+    
+  
+</aside>
+
+  </div>
+</div>
+
+<footer role="contentinfo">
+  <p>Copyright &copy; 2018  - <a href="https://philtomson.github.io/license/">License</a> -
+  <span class="credit">Powered by <a target="_blank" href="https://gohugo.io">Hugo</a> and <a target="_blank" href="https://github.com/parsiya/hugo-octopress/">Hugo-Octopress</a> theme.
+</p>
+
+</footer>
+
+
+
+
+
+
+</body>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+</html>
+
+

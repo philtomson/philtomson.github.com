@@ -107,6 +107,38 @@
         
 
 <header>
+    <p class="meta">Jun 15, 2018
+         - 4 minute read 
+         - <a href="https://philtomson.github.io/blog/2018-06-15-translating-pytorch-models-to-flux.jl-part1-rnn/#disqus_thread">Comments</a>
+
+        
+    </p>
+    <h1 class="entry-title">
+        <a href="https://philtomson.github.io/blog/2018-06-15-translating-pytorch-models-to-flux.jl-part1-rnn/">Translating PyTorch models to Flux.jl Part1: RNN</a>
+    </h1>
+</header>
+
+
+        
+          <p>Flux.jl is a machine learning framework built in Julia. It has some similarities to PyTorch, and like most modern frameworks includes autodifferentiation. It&rsquo;s definitely still a work in progress, but it is being actively developed (including several GSoC projects this summer).
+I was curious about how easy/difficult it might be to convert a PyTorch model into Flux.jl. I found a fairly simple PyTorch tutorial on RNNs to translate. My goal here isn&rsquo;t to explain RNNs (see the linked article for that) - my intent is to see what is required to go from the PyTorch/Python ecosystem to the Flux.</p>
+
+          
+              <footer>
+                  <a href="https://philtomson.github.io/blog/2018-06-15-translating-pytorch-models-to-flux.jl-part1-rnn/" rel="full-article">Read On &rarr;</a>
+              </footer>
+          
+
+        
+
+    </article>
+    
+    <article>
+
+        
+        
+
+<header>
     <p class="meta">Jun 11, 2018
          - 2 minute read 
          - <a href="https://philtomson.github.io/blog/2018-06-11-migrated-blog-from-octopress-to-hugo/#disqus_thread">Comments</a>
@@ -422,42 +454,6 @@ Before we can code our happy little trees we need to define what a tree is: 1  #
 
     </article>
     
-    <article>
-
-        
-        
-
-<header>
-    <p class="meta">Mar 7, 2014
-         - 4 minute read 
-         - <a href="https://philtomson.github.io/blog/2014-03-07-c---dusty-corner-number-537-0-is-sometimes-a-special-number/#disqus_thread">Comments</a>
-
-        
-        
-        
-            - 
-        
-    </p>
-    <h1 class="entry-title">
-        <a href="https://philtomson.github.io/blog/2014-03-07-c---dusty-corner-number-537-0-is-sometimes-a-special-number/">C&#43;&#43; Dusty Corner number 537: 0 is sometimes a special number</a>
-    </h1>
-</header>
-
-
-        
-          <p>I recently discovered the C++ Quiz site and figuring that it&rsquo;s always good to practice C++ skills I started going through the questions. The third question I encountered gave me some pause&hellip; The question was:
-According to the C++11 standard, what is the output of this program? #include &lt;iostream&gt; void print(char const *str) { std::cout &lt;&lt; str; } void print(short num) { std::cout &lt;&lt; num; } int main() { print(&quot;abc&quot;); print(0); print('A'); }  Now the obvious response would be &ldquo;abc065&rdquo;, but I suspected there was some sort of trickery afoot here.</p>
-
-          
-              <footer>
-                  <a href="https://philtomson.github.io/blog/2014-03-07-c---dusty-corner-number-537-0-is-sometimes-a-special-number/" rel="full-article">Read On &rarr;</a>
-              </footer>
-          
-
-        
-
-    </article>
-    
     
     
 
@@ -549,6 +545,12 @@ According to the C++11 standard, what is the output of this program? #include &l
           
             
               <li class="post">
+                <a href="/blog/2018-06-15-translating-pytorch-models-to-flux.jl-part1-rnn/">Translating PyTorch models to Flux.jl Part1: RNN</a>
+              </li>
+            
+          
+            
+              <li class="post">
                 <a href="/blog/2018-06-11-migrated-blog-from-octopress-to-hugo/">Migrated blog from Octopress to Hugo</a>
               </li>
             
@@ -568,12 +570,6 @@ According to the C++11 standard, what is the output of this program? #include &l
             
               <li class="post">
                 <a href="/blog/2014-09-10-some-notes-on-building-and-running-mirage-unikernels-on-cubieboard2/">Some notes on building and running mirage unikernels on Cubieboard2</a>
-              </li>
-            
-          
-            
-              <li class="post">
-                <a href="/blog/2014-07-09-cooperative-concurrency-in-ocaml-a-core.std.async-example/">Cooperative Concurrency in OCaml: A Core.Std.Async example</a>
               </li>
             
           

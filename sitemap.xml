@@ -3,6 +3,11 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://philtomson.github.io/blog/2018-06-15-translating-pytorch-models-to-flux.jl-part1-rnn/</loc>
+    <lastmod>2018-06-15T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://philtomson.github.io/blog/2018-06-11-migrated-blog-from-octopress-to-hugo/</loc>
     <lastmod>2018-06-11T00:00:00+00:00</lastmod>
   </url>
@@ -69,13 +74,13 @@
   
   <url>
     <loc>https://philtomson.github.io/</loc>
-    <lastmod>2018-06-11T00:00:00+00:00</lastmod>
+    <lastmod>2018-06-15T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://philtomson.github.io/post/</loc>
-    <lastmod>2018-06-11T00:00:00+00:00</lastmod>
+    <lastmod>2018-06-15T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   

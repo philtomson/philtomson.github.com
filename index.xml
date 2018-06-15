@@ -6,10 +6,20 @@
     <description>Recent content on My Little Garden of Code</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 11 Jun 2018 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 15 Jun 2018 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://philtomson.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Translating PyTorch models to Flux.jl Part1: RNN</title>
+      <link>https://philtomson.github.io/blog/2018-06-15-translating-pytorch-models-to-flux.jl-part1-rnn/</link>
+      <pubDate>Fri, 15 Jun 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://philtomson.github.io/blog/2018-06-15-translating-pytorch-models-to-flux.jl-part1-rnn/</guid>
+      <description>Flux.jl is a machine learning framework built in Julia. It has some similarities to PyTorch, and like most modern frameworks includes autodifferentiation. It&amp;rsquo;s definitely still a work in progress, but it is being actively developed (including several GSoC projects this summer).
+I was curious about how easy/difficult it might be to convert a PyTorch model into Flux.jl. I found a fairly simple PyTorch tutorial on RNNs to translate. My goal here isn&amp;rsquo;t to explain RNNs (see the linked article for that) - my intent is to see what is required to go from the PyTorch/Python ecosystem to the Flux.</description>
+    </item>
     
     <item>
       <title>Migrated blog from Octopress to Hugo</title>
