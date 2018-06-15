@@ -106,7 +106,7 @@
 
 <header>
     <p class="meta">Jun 15, 2018
-         - 4 minute read 
+         - 5 minute read 
          - <a href="https://philtomson.github.io/blog/2018-06-15-translating-pytorch-models-to-flux.jl-part1-rnn/#disqus_thread">Comments</a>
 
         
@@ -420,6 +420,8 @@ A few notable differences:</p>
 <li>&rsquo;.&rsquo; prior to an operator (such as at line 41 in the Julia code) indicates a broadcasting operation in Julia. Note also line &lsquo;.&rsquo; after the tanh at line 25, it indicates that the tanh is broadcast to the matrix that results from xh*W1. (From what I can tell, numpy sort of automatically determines whether an operation should broadcast or not based on the dimensions of the operands - Julia is more explicit about this.)</li>
 <li>Even the plotting at the end is very similar between the two versions.</li>
 </ul>
+
+<p>In the next post I&rsquo;ll modify the Julia version to use the GPU.</p>
 
         </div>
         
