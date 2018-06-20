@@ -6,10 +6,21 @@
     <description>Recent content in Posts on My Little Garden of Code</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 15 Jun 2018 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 20 Jun 2018 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://philtomson.github.io/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Translating PyTorch models to Flux.jl Part2: Running on GPU</title>
+      <link>https://philtomson.github.io/blog/2018-06-20-translating-pytorch-models-to-flux.jl-part2-running-on-gpu/</link>
+      <pubDate>Wed, 20 Jun 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://philtomson.github.io/blog/2018-06-20-translating-pytorch-models-to-flux.jl-part2-running-on-gpu/</guid>
+      <description>In the previous post I translated a simple PyTorch RNN to Flux.jl a machine learning framework for Julia.
+Here&amp;rsquo;s the Julia code modified to use the GPU (and refactored a bit from the previous version; I&amp;rsquo;ve put the prediction section into a predict function):
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73  using Flux using Flux.</description>
+    </item>
     
     <item>
       <title>Translating PyTorch models to Flux.jl Part1: RNN</title>

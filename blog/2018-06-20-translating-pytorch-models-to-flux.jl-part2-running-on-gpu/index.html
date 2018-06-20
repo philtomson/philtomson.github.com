@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+<head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width,minimum-scale=1,maximum-scale=1">
+
+  
+    
+    
+      <link href="/css/fonts.css" rel="stylesheet" type="text/css">
+    
+  
+
+  
+  <title>Translating PyTorch models to Flux.jl Part2: Running on GPU</title>
+
+  
+  
+  <link rel="stylesheet" href="/css/hugo-octopress.css">
+
+  
+  
+
+  
+    <link rel="stylesheet" href="/css/fork-awesome.min.css">
+  
+
+  
+  <link href="https://philtomson.github.io/favicon.png" rel="icon">
+
+  
+  
+  
+
+  
+
+  <meta name="description" content="">
+  <meta name="keywords" content="">
+
+  <meta name="author" content="">
+
+  
+  <meta name="generator" content="Hugo 0.40.1" />
+
+  
+  
+
+  
+  
+
+</head>
+<body>
+
+
+<header role="banner"><hgroup>
+  
+  <h1><a href="https://philtomson.github.io/">My Little Garden of Code</a></h1>
+    <h2></h2>
+</hgroup></header>
+
+
+<nav role="navigation">
+<fieldset class="mobile-nav">
+  
+  <select onchange="location = this.value;">
+    <option value="">Navigate…</option>
+      
+        <option value="https://philtomson.github.io/">» Home</option>
+      
+
+  </select>
+</fieldset>
+
+
+<ul class="main-navigation">
+  
+  
+    
+      <li><a href="https://philtomson.github.io/" title="Home">Home</a></li>
+    
+  
+</ul>
+
+
+<ul class="subscription">
+  
+
+</ul>
+
+
+</nav>
+
+
+<div id="main">
+  <div id="content">
+    <div>
+      <article class="hentry" role="article">
+
+        
+        
+
+<header>
+    <p class="meta">Jun 20, 2018
+         - 4 minute read 
+         - <a href="https://philtomson.github.io/blog/2018-06-20-translating-pytorch-models-to-flux.jl-part2-running-on-gpu/#disqus_thread">Comments</a>
+
+        
+    </p>
+    <h1 class="entry-title">
+         Translating PyTorch models to Flux.jl Part2: Running on GPU 
+    </h1>
+</header>
+
+
+        <div class="entry-content">
+          
+          
+          
+          
+          <p>In the <a href="https://philtomson.github.io/blog/2018-06-15-translating-pytorch-models-to-flux.jl-part1-rnn/">previous post</a> I translated a simple <a href="https://www.cpuheater.com/deep-learning/introduction-to-recurrent-neural-networks-in-pytorch/">PyTorch RNN</a> to <a href="http://fluxml.ai/Flux.jl/stable/">Flux.jl</a> a machine learning framework for Julia.</p>
+
+<p>Here&rsquo;s the Julia code modified to use the GPU (and refactored a bit from the previous version; I&rsquo;ve put the prediction section into a <em>predict</em> function):</p>
+
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-julia" data-lang="julia"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">38
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">39
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">40
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">41
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">42
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">43
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">44
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">45
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">46
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">47
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">48
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">49
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">50
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">51
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">52
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">53
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">54
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">55
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">56
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">57
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">58
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">59
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">60
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">61
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">62
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">63
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">64
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">65
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">66
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">67
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">68
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">69
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">70
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">71
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">72
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">73
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-julia" data-lang="julia"><span style="color:#66d9ef">using</span> Flux
+<span style="color:#66d9ef">using</span> Flux<span style="color:#f92672">.</span>Tracker
+<span style="color:#66d9ef">using</span> Plots
+<span style="color:#66d9ef">using</span> CuArrays
+
+srand(<span style="color:#ae81ff">1</span>)
+
+input_size, hidden_size, output_size <span style="color:#f92672">=</span> <span style="color:#ae81ff">7</span>, <span style="color:#ae81ff">6</span>, <span style="color:#ae81ff">1</span>
+epochs <span style="color:#f92672">=</span> <span style="color:#ae81ff">200</span>
+seq_length <span style="color:#f92672">=</span> <span style="color:#ae81ff">20</span>
+lr <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.1</span>
+
+data_time_steps <span style="color:#f92672">=</span> (linspace(<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">10</span>, seq_length<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>))
+data <span style="color:#f92672">=</span> (sin<span style="color:#f92672">.</span>(data_time_steps))
+
+x <span style="color:#f92672">=</span> gpu(data[<span style="color:#ae81ff">1</span><span style="color:#f92672">:</span><span style="color:#66d9ef">end</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>])
+y <span style="color:#f92672">=</span> gpu(data[<span style="color:#ae81ff">2</span><span style="color:#f92672">:</span><span style="color:#66d9ef">end</span>])
+
+w1 <span style="color:#f92672">=</span> (param(gpu(randn(input_size,  hidden_size))))
+w2 <span style="color:#f92672">=</span> (param(gpu(randn(hidden_size, output_size))))
+
+<span style="color:#66d9ef">function</span> forward(input, context_state, W1, W2)
+   <span style="color:#75715e">#xh = cat(2,input, context_state) </span>
+   <span style="color:#75715e">#  Due to a Flux bug you have to do:</span>
+   xh <span style="color:#f92672">=</span> gpu(cat(<span style="color:#ae81ff">2</span>, Tracker<span style="color:#f92672">.</span>collect(input), context_state))
+   context_state <span style="color:#f92672">=</span> CUDAnative<span style="color:#f92672">.</span>tanh<span style="color:#f92672">.</span>(xh<span style="color:#f92672">*</span>W1)
+   out <span style="color:#f92672">=</span> context_state<span style="color:#f92672">*</span>W2
+   <span style="color:#66d9ef">return</span> out, context_state
+<span style="color:#66d9ef">end</span>
+
+<span style="color:#66d9ef">function</span> train() 
+   <span style="color:#66d9ef">for</span> i <span style="color:#66d9ef">in</span> <span style="color:#ae81ff">1</span><span style="color:#f92672">:</span>epochs
+      total_loss <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+      context_state <span style="color:#f92672">=</span> gpu(zeros(<span style="color:#ae81ff">1</span>,hidden_size))
+      <span style="color:#66d9ef">for</span> j <span style="color:#66d9ef">in</span> <span style="color:#ae81ff">1</span><span style="color:#f92672">:</span>length(x)
+        input <span style="color:#f92672">=</span> x[j]
+        target<span style="color:#f92672">=</span> y[j]
+        pred, context_state <span style="color:#f92672">=</span> forward(input, context_state, w1, w2)
+        loss <span style="color:#f92672">=</span> sum((pred <span style="color:#f92672">.-</span> target)<span style="color:#f92672">.^</span><span style="color:#ae81ff">2</span>)<span style="color:#f92672">/</span><span style="color:#ae81ff">2</span>
+        total_loss <span style="color:#f92672">+=</span> loss
+        back!(loss)
+        w1<span style="color:#f92672">.</span>data <span style="color:#f92672">.-=</span> lr<span style="color:#f92672">.*</span>w1<span style="color:#f92672">.</span>grad
+        w2<span style="color:#f92672">.</span>data <span style="color:#f92672">.-=</span> lr<span style="color:#f92672">.*</span>w2<span style="color:#f92672">.</span>grad
+
+        w1<span style="color:#f92672">.</span>grad <span style="color:#f92672">.=</span> <span style="color:#ae81ff">0.0</span>
+        w2<span style="color:#f92672">.</span>grad <span style="color:#f92672">.=</span> <span style="color:#ae81ff">0.0</span> 
+        context_state <span style="color:#f92672">=</span> gpu(context_state<span style="color:#f92672">.</span>data) 
+      <span style="color:#66d9ef">end</span>
+      <span style="color:#66d9ef">if</span>(i <span style="color:#f92672">%</span> <span style="color:#ae81ff">10</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>)
+        println(<span style="color:#e6db74">&#34;Epoch: </span><span style="color:#e6db74">$i</span><span style="color:#e6db74">  loss: </span><span style="color:#e6db74">$total_loss</span><span style="color:#e6db74">&#34;</span>)
+      <span style="color:#66d9ef">end</span>
+   <span style="color:#66d9ef">end</span>
+<span style="color:#66d9ef">end</span>
+
+<span style="color:#66d9ef">function</span> predict(x,w1,w2)
+   context_state <span style="color:#f92672">=</span> gpu(zeros(<span style="color:#ae81ff">1</span>,hidden_size))
+   predictions <span style="color:#f92672">=</span> []
+   <span style="color:#66d9ef">for</span> i <span style="color:#66d9ef">in</span> <span style="color:#ae81ff">1</span><span style="color:#f92672">:</span>length(x)
+     input <span style="color:#f92672">=</span> x[i]
+     pred, context_state <span style="color:#f92672">=</span> forward(input, context_state, w1, w2)
+     append!(predictions, pred<span style="color:#f92672">.</span>data)
+   <span style="color:#66d9ef">end</span>
+   predictions
+<span style="color:#66d9ef">end</span>
+
+println(<span style="color:#e6db74">&#34;train&#34;</span>)
+train()
+println(<span style="color:#e6db74">&#34;predict&#34;</span>)
+predictions <span style="color:#f92672">=</span> predict(x,w1,w2)
+println(<span style="color:#e6db74">&#34;... plot ... &#34;</span>)
+Plots<span style="color:#f92672">.</span>backend(<span style="color:#f92672">:</span>gr)
+scatter(data_time_steps[<span style="color:#ae81ff">1</span><span style="color:#f92672">:</span><span style="color:#66d9ef">end</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>], x, label<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;actual&#34;</span>)
+scatter!(data_time_steps[<span style="color:#ae81ff">2</span><span style="color:#f92672">:</span><span style="color:#66d9ef">end</span>],predictions, label<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;predicted&#34;</span>)</code></pre></td></tr></table>
+</div>
+</div>
+
+<p>On line 4 we&rsquo;re now <em>using CuArrays</em>. This will pull in CUDA arrays from <a href="https://github.com/JuliaGPU/CuArrays.jl">CuArrays.jl</a>.</p>
+
+<p>Now in order to indicate taht we want some data on the GPU we wrap it in the <em>Flux.gpu()</em> function as we do for the <em>x</em> and <em>y</em> assignments on lines 16 &amp; 17. Note that the weights <em>w1</em> and <em>w2</em> are also tracked parameters for the sake of backpropagation so for those assignments (lines 19 &amp; 20) we call <em>gpu</em> on the <em>randn</em> matrices and then pass that as the parameter to <em>param</em>.</p>
+
+<p>The other signficant change here is that now in the <em>forward()</em> function where we call the activation function (line 26) it must chang from:</p>
+
+<pre><code>context_state = tanh.(xh*W1)
+</code></pre>
+
+<p>to:</p>
+
+<pre><code>context_state = CUDAnative.tanh.(xh*W1)
+</code></pre>
+
+<p>This wasn&rsquo;t well documented in Flux or CuArrays, but without this change I got this rather unhelpful error message:</p>
+
+<pre><code>ERROR: LoadError: CUDA error: invalid program counter (code #718, ERROR_INVALID_PC)
+</code></pre>
+
+<p>So apparently we need to call the <em>tanh</em> defined in <a href="https://github.com/JuliaGPU/CUDAnative.jl">CUDAnative</a> in order for it to actually run the <em>tanh</em> on the GPU.</p>
+
+<p>It&rsquo;s important to note that if you comment out the <em>using CuArrays</em> on line 4, the calls to <em>gpu</em> don&rsquo;t do anything and the operations will run on the CPU as if those calls weren&rsquo;t there.</p>
+
+<p>So, how did running this model on the GPU affect performance? It looks like it actually degraded performance. With the GPU enabled (line 4 uncommented):</p>
+
+<pre><code>real    0m30.648s
+user    0m30.005s
+sys   0m1.068s
+</code></pre>
+
+<p>And without the GPU enabled (line 4 commented and line 26 changed to use <em>tanh()</em> instead of <em>CUDAnative.tanh()</em>):</p>
+
+<pre><code>real    0m17.032s
+user    0m17.091s
+sys   0m0.452s
+</code></pre>
+
+<p>I think this is because this is a fairly small model and the overhead of passing data to/from the GPU is greater than the computational overhead.</p>
+
+<p>I do kind of wish we could switch between GPU and CPU more easily - some of the Python frameworks seem to make this easier. Calls to <em>CUDAnative.op()</em> have to be changed back to <em>op()</em> when running on the CPU (as with the <em>tanh()</em> call above). Perhaps some change in CuArrays.jl could get around this such that if you&rsquo;re <em>using CuArrays</em> you get <em>CUDAnative.op()</em> instead of <em>op()</em> when the operands are <em>CuArrays</em>?</p>
+
+        </div>
+        
+
+<footer>
+  <p class="meta">
+    <span class="byline author vcard">Posted by <span class="fn"></span></span>
+    
+    <time>Jun 20, 2018</time>
+    
+    </span>
+  </p>
+
+  
+  
+
+  
+
+  <p class="meta">
+    
+        <a class="basic-alignment left" href="https://philtomson.github.io/blog/2018-06-15-translating-pytorch-models-to-flux.jl-part1-rnn/" title="Translating PyTorch models to Flux.jl Part1: RNN">Translating PyTorch models to Flux.jl Part1: RNN</a>
+    
+
+    
+  </p>
+  
+    
+      <div id="disqus_thread"></div>
+<script type="text/javascript">
+
+(function() {
+    
+    
+    
+    if (window.location.hostname == "localhost")
+        return;
+
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    var disqus_shortname = 'mylittlegardenofcode';
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+    
+  
+</footer>
+
+      </article>
+    </div>
+    
+
+<aside class="sidebar thirds">
+  <section class="first odd">
+
+    
+
+    <p>
+      
+    </p>
+  </section>
+
+
+
+  
+  <ul class="sidebar-nav">
+    <li class="sidebar-nav-item">
+      <a target="_blank" href="https://github.com/philtomson/" title="https://github.com/philtomson/"><i class="fa fa-github fa-3x"></i></a>
+      
+      
+      
+      
+         
+      
+      
+      <a target="_blank" href="https://stackoverflow.com/users/46190/aneccodeal" title="https://stackoverflow.com/users/46190/aneccodeal"><i class="fa fa-stack-overflow fa-3x"></i></a>
+      
+      
+      
+      
+      
+
+    
+    
+    </li>
+  </ul>
+
+  
+
+  
+
+  
+  
+  
+    
+      <section class="even">
+        <h1>Recent Posts</h1>
+        <ul id="recent_posts">
+          
+          
+            
+              <li class="post">
+                <a href="/blog/2018-06-20-translating-pytorch-models-to-flux.jl-part2-running-on-gpu/">Translating PyTorch models to Flux.jl Part2: Running on GPU</a>
+              </li>
+            
+          
+            
+              <li class="post">
+                <a href="/blog/2018-06-15-translating-pytorch-models-to-flux.jl-part1-rnn/">Translating PyTorch models to Flux.jl Part1: RNN</a>
+              </li>
+            
+          
+            
+              <li class="post">
+                <a href="/blog/2018-06-11-migrated-blog-from-octopress-to-hugo/">Migrated blog from Octopress to Hugo</a>
+              </li>
+            
+          
+            
+              <li class="post">
+                <a href="/blog/2017-02-06-testing-mathjax/">Testing MathJax</a>
+              </li>
+            
+          
+            
+              <li class="post">
+                <a href="/blog/2017-02-02-funemployment/">FUNemployment</a>
+              </li>
+            
+          
+        </ul>
+      </section>
+    
+  
+</aside>
+
+  </div>
+</div>
+
+<footer role="contentinfo">
+  <p>Copyright &copy; 2018  - <a href="https://philtomson.github.io/license/">License</a> -
+  <span class="credit">Powered by <a target="_blank" href="https://gohugo.io">Hugo</a> and <a target="_blank" href="https://github.com/parsiya/hugo-octopress/">Hugo-Octopress</a> theme.
+</p>
+
+</footer>
+
+
+
+
+
+
+</body>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+</html>
+
+
