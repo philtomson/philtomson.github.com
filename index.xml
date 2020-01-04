@@ -6,10 +6,19 @@
     <description>Recent content on My Little Garden of Code</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 20 Jun 2018 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 03 Jan 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://philtomson.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>New_test</title>
+      <link>https://philtomson.github.io/blog/2019-01-03-new_test/</link>
+      <pubDate>Thu, 03 Jan 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://philtomson.github.io/blog/2019-01-03-new_test/</guid>
+      <description>Testing 1.. 2.. 3..</description>
+    </item>
     
     <item>
       <title>Translating PyTorch models to Flux.jl Part2: Running on GPU</title>
